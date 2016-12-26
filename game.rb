@@ -2,11 +2,15 @@ require 'gosu'
 
 class GameWindow < Gosu::Window
   CAR_SCALE = 0.3
-  TURNING_SPEED = 0.07
-  ACCELERATION = 0.15
+
+  LINEAR_ACCELERATION = 0.15
   BREAKING_POWER = 0.3
-  ANGULAR_FRICTION = 0.9
   LINEAR_FRICTION = 0.98
+  # Top speed = 0.15 / (1 - 0.98) * 0.98 = 7.35px/fr
+
+  ANGULAR_ACCELERATION = 0.07
+  ANGULAR_FRICTION = 0.9
+  # Top angular velocity = 0.07 / (1 - 0.9) * 0.9 = 0.63deg/fr
 
   def initialize
     super 640, 480
@@ -22,11 +26,11 @@ class GameWindow < Gosu::Window
 
   def update
     if Gosu.button_down? Gosu::KbLeft
-      @angle_velocity -= TURNING_SPEED
+      @angle_velocity -= ANGULAR_ACCELERATION
     end
 
     if Gosu.button_down? Gosu::KbRight
-      @angle_velocity += TURNING_SPEED
+      @angle_velocity += ANGULAR_ACCELERATION
     end
 
     if Gosu.button_down? Gosu::KbUp
@@ -48,7 +52,7 @@ class GameWindow < Gosu::Window
   private
 
   def accelerate
-    @velocity += ACCELERATION
+    @velocity += LINEAR_ACCELERATION
   end
 
   def brake
