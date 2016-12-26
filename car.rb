@@ -56,8 +56,8 @@ class Car
   def move
     @x += Gosu.offset_x(@angle, @velocity)
     @y += Gosu.offset_y(@angle, @velocity)
-    @x %= 640
-    @y %= 480
+    @x %= 640 # TODO: magic number
+    @y %= 480 # TODO: magic number
 
     @velocity *= LINEAR_FRICTION
   end
