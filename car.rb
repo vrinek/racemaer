@@ -20,10 +20,10 @@ class Car
   end
 
   def update
-    decrease_angular_velocity if Gosu.button_down? Gosu::KbLeft
-    increase_angular_velocity if Gosu.button_down? Gosu::KbRight
-    accelerate                if Gosu.button_down? Gosu::KbUp
-    brake                     if Gosu.button_down? Gosu::KbDown
+    turn_left  if Gosu.button_down? Gosu::KbLeft
+    turn_right if Gosu.button_down? Gosu::KbRight
+    accelerate if Gosu.button_down? Gosu::KbUp
+    brake      if Gosu.button_down? Gosu::KbDown
 
     turn
     move
@@ -35,11 +35,11 @@ class Car
 
   private
 
-  def increase_angular_velocity
+  def turn_right
     @angle_velocity += ANGULAR_ACCELERATION
   end
 
-  def decrease_angular_velocity
+  def turn_left
     @angle_velocity -= ANGULAR_ACCELERATION
   end
 
