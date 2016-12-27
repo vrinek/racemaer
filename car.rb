@@ -1,9 +1,10 @@
 # Player car
 class Car
+  Z_ORDER = 5
   SPRITE_SCALE = 0.5
 
   LINEAR_ACCELERATION = 0.15
-  BREAKING_POWER = 0.3
+  BRAKING_POWER = 0.3
   LINEAR_FRICTION = 0.98
   # Top speed = 0.15 / (1 - 0.98) * 0.98 = 7.35px/fr = 441px/sec
 
@@ -13,6 +14,7 @@ class Car
 
   def initialize(initial_x, initial_y)
     @sprite = Gosu::Image.new('assets/Cars/car_red_1.png', retro: true)
+
     @velocity = 0
     @angular_velocity = 0
     @x = initial_x
@@ -31,7 +33,7 @@ class Car
   end
 
   def draw
-    @sprite.draw_rot(@x, @y, 1, @angle, 0.5, 0.6, SPRITE_SCALE, SPRITE_SCALE)
+    @sprite.draw_rot(@x, @y, Z_ORDER, @angle, 0.5, 0.6, SPRITE_SCALE, SPRITE_SCALE)
   end
 
   private
@@ -49,7 +51,7 @@ class Car
   end
 
   def brake
-    @velocity -= BREAKING_POWER
+    @velocity -= BRAKING_POWER
 
     @velocity = [@velocity, 0].max
   end

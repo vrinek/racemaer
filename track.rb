@@ -1,5 +1,6 @@
+# Race track to drive on
 class Track
-  Z_ORDER = 0
+  Z_ORDER = 1
   TILE_SIZE = 128
   TILE_SET_SIZE = 90
 
