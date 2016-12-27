@@ -1,6 +1,7 @@
 require 'json'
 
 require 'gosu'
+require 'chipmunk'
 
 require_relative './debug_dialog.rb'
 require_relative './track.rb'
@@ -16,14 +17,19 @@ class GameWindow < Gosu::Window
 
     @debug_dialog = DebugDialog.new(window: self)
 
+    @space = CP::Space.new
+
     load_map!
     load_car!
+    @space.damping = Car::LINEAR_FRICTION
   end
 
   def update
     @debug_dialog.update
     @track.update
     @car.update
+
+    @space.step(update_interval / 1000)
   end
 
   def draw
@@ -33,15 +39,16 @@ class GameWindow < Gosu::Window
   end
 
   def load_map!
-    test_track_1 = File.open('maps/test_track_1.json') do |file|
+    current_map = File.open('maps/test_track_1.json') do |file|
       JSON.load(file)
     end
-    @track = Track.new(map: test_track_1)
+    @track = Track.new(map: current_map)
   end
 
   def load_car!
     load('./car.rb')
     @car = Car.new(WIDTH / 2, HEIGHT / 2)
+    @space.add_body(@car.rigid_body)
   end
 end
 

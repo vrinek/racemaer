@@ -3,70 +3,84 @@ class Car
   Z_ORDER = 5
   SPRITE_SCALE = 0.5
 
-  LINEAR_ACCELERATION = 0.15
-  BRAKING_POWER = 0.3
-  LINEAR_FRICTION = 0.98
+  LINEAR_ACCELERATION = 540 # 9 * 60 # 0.15 * 60
+  BRAKING_POWER = 1080 # 0.3 * 60 * 60
+  LINEAR_FRICTION = 0.3 # ~0.98**60
   # Top speed = 0.15 / (1 - 0.98) * 0.98 = 7.35px/fr = 441px/sec
 
   ANGULAR_ACCELERATION = 0.1
   ANGULAR_FRICTION = 0.9
   # Top angular velocity = 0.07 / (1 - 0.9) * 0.9 = 0.63deg/fr = 37.8deg/sec
 
-  def initialize(initial_x, initial_y)
-    @sprite = Gosu::Image.new('assets/Cars/car_red_1.png', retro: true)
+  attr_reader :sprite
+  attr_reader :rigid_body
+  attr_reader :angular_velocity
+  attr_reader :x, :y, :angle
 
-    @velocity = 0
+  def initialize(initial_x, initial_y)
+    @sprite = Gosu::Image.new('assets/Cars/car_blue_1.png', retro: true)
+
+    @rigid_body = CP::Body.new(1, 1)
+
     @angular_velocity = 0
-    @x = initial_x
-    @y = initial_y
+    rigid_body.p.x = initial_x
+    rigid_body.p.y = initial_y
     @angle = 0
   end
 
   def update
-    turn_left  if Gosu.button_down? Gosu::KbLeft
-    turn_right if Gosu.button_down? Gosu::KbRight
-    accelerate if Gosu.button_down? Gosu::KbUp
-    brake      if Gosu.button_down? Gosu::KbDown
+    rigid_body.reset_forces
+    dt = 1 / 60.0 # TEMP: approximation
 
-    turn
-    move
+    turn_left(dt)  if Gosu.button_down? Gosu::KbLeft
+    turn_right(dt) if Gosu.button_down? Gosu::KbRight
+    accelerate     if Gosu.button_down? Gosu::KbUp
+    brake          if Gosu.button_down? Gosu::KbDown
+
+    apply_tires_force(dt)
+
+    turn(dt)
   end
 
   def draw
-    @sprite.draw_rot(@x, @y, Z_ORDER, @angle, 0.5, 0.6, SPRITE_SCALE, SPRITE_SCALE)
+    sprite.draw_rot(rigid_body.p.x, rigid_body.p.y, Z_ORDER, angle, 0.5, 0.6, SPRITE_SCALE, SPRITE_SCALE)
   end
 
   private
 
-  def turn_right
-    @angular_velocity += [ANGULAR_ACCELERATION / @velocity * 2, ANGULAR_ACCELERATION].min
+  def velocity
+    rigid_body.v.length
   end
 
-  def turn_left
-    @angular_velocity -= [ANGULAR_ACCELERATION / @velocity * 2, ANGULAR_ACCELERATION].min
+  def turn_right(dt)
+    @angular_velocity += [ANGULAR_ACCELERATION / (velocity * dt) * 2, ANGULAR_ACCELERATION].min
+  end
+
+  def turn_left(dt)
+    @angular_velocity -= [ANGULAR_ACCELERATION / (velocity * dt) * 2, ANGULAR_ACCELERATION].min
   end
 
   def accelerate
-    @velocity += LINEAR_ACCELERATION
+    @rigid_body.apply_force(direction_vector * LINEAR_ACCELERATION, CP::Vec2::ZERO)
   end
 
   def brake
-    @velocity -= BRAKING_POWER
-
-    @velocity = [@velocity, 0].max
+    # TODO: Stop applying force when velocity is backwards
+    @rigid_body.apply_force(direction_vector * BRAKING_POWER * -1, CP::Vec2::ZERO)
   end
 
-  def move
-    @x += Gosu.offset_x(@angle, @velocity)
-    @y += Gosu.offset_y(@angle, @velocity)
-    @x %= 1280 # TODO: magic number
-    @y %= 768 # TODO: magic number
-
-    @velocity *= LINEAR_FRICTION
+  def apply_tires_force(dt)
+    orthogonal_direction = CP::Vec2.for_angle(((angle + 90) % 360).gosu_to_radians)
+    tires_force = (rigid_body.v / dt).project(orthogonal_direction) * -1
+    rigid_body.apply_force(tires_force, CP::Vec2::ZERO)
   end
 
-  def turn
-    @angle += @angular_velocity * @velocity
+  def direction_vector
+    CP::Vec2.for_angle(angle.gosu_to_radians)
+  end
+
+  def turn(dt)
+    @angle += angular_velocity * (velocity * dt)
     @angular_velocity *= ANGULAR_FRICTION
   end
 end

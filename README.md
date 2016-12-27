@@ -15,7 +15,7 @@ You are a racing teacher. You're teaching an AI how to drive and win the champio
     - [x] Sprites
         - [x] Road
         - [x] Background
-    - [ ] Physics - _via Chipmunk_
+    - [ ] Physics _via Chipmunk_
         - [ ] Barriers
         - [ ] Tarmac Vs Sandtraps friction
 - [ ] Gameplay
