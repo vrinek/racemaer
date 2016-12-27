@@ -30,7 +30,9 @@ class DebugDialog
   def parse(text)
     case text
     when /^reload map$/
-      @window.reload_map!
+      @window.load_map!
+    when /^reload car$/
+      @window.load_car!
     end
   end
 end

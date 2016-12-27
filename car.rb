@@ -1,20 +1,20 @@
 # Player car
 class Car
-  SPRITE_SCALE = 0.3
+  SPRITE_SCALE = 0.5
 
   LINEAR_ACCELERATION = 0.15
   BREAKING_POWER = 0.3
   LINEAR_FRICTION = 0.98
   # Top speed = 0.15 / (1 - 0.98) * 0.98 = 7.35px/fr = 441px/sec
 
-  ANGULAR_ACCELERATION = 0.07
+  ANGULAR_ACCELERATION = 0.1
   ANGULAR_FRICTION = 0.9
   # Top angular velocity = 0.07 / (1 - 0.9) * 0.9 = 0.63deg/fr = 37.8deg/sec
 
   def initialize(initial_x, initial_y)
     @sprite = Gosu::Image.new('assets/Cars/car_red_1.png', retro: true)
     @velocity = 0
-    @angle_velocity = 0
+    @angular_velocity = 0
     @x = initial_x
     @y = initial_y
     @angle = 0
@@ -37,11 +37,11 @@ class Car
   private
 
   def turn_right
-    @angle_velocity += ANGULAR_ACCELERATION
+    @angular_velocity += [ANGULAR_ACCELERATION / @velocity * 2, ANGULAR_ACCELERATION].min
   end
 
   def turn_left
-    @angle_velocity -= ANGULAR_ACCELERATION
+    @angular_velocity -= [ANGULAR_ACCELERATION / @velocity * 2, ANGULAR_ACCELERATION].min
   end
 
   def accelerate
@@ -64,7 +64,7 @@ class Car
   end
 
   def turn
-    @angle += @angle_velocity * @velocity
-    @angle_velocity *= ANGULAR_FRICTION
+    @angle += @angular_velocity * @velocity
+    @angular_velocity *= ANGULAR_FRICTION
   end
 end
