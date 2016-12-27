@@ -12,9 +12,9 @@ You are a racing teacher. You're teaching an AI how to drive and win the champio
     - [x] Braking
     - [ ] Reverse
 - [ ] Race track
-    - [ ] Sprites
+    - [x] Sprites
         - [x] Road
-        - [ ] Background
+        - [x] Background
     - [ ] Physics - _via Chipmunk_
         - [ ] Barriers
         - [ ] Tarmac Vs Sandtraps friction
