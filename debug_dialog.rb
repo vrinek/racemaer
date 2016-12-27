@@ -13,14 +13,24 @@ class DebugDialog
     if !@window.text_input && Gosu.button_down?(Gosu::KbBacktick)
       @window.text_input = Gosu::TextInput.new
     elsif @window.text_input && Gosu.button_down?(Gosu::KbReturn)
+      parse(@window.text_input.text)
       @window.text_input = nil
     end
   end
 
   def draw
-    if @window.text_input
-      Gosu::Image.from_text(@window.text_input.text, FONT_SIZE)
-        .draw(X, Y, Z_ORDER)
+    return unless @window.text_input
+
+    Gosu::Image.from_text(@window.text_input.text, FONT_SIZE)
+      .draw(X, Y, Z_ORDER)
+  end
+
+  private
+
+  def parse(text)
+    case text
+    when /^reload map$/
+      @window.reload_map!
     end
   end
 end
