@@ -33,6 +33,8 @@ class DebugDialog
       @window.load_map!
     when /^reload car$/
       @window.load_car!
+    when /^debug on$/
+      @window.enable_debug!
     end
   end
 end

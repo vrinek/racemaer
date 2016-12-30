@@ -16,6 +16,7 @@ class GameWindow < Gosu::Window
     self.caption = 'Gosu Tutorial Game'
 
     @debug_dialog = DebugDialog.new(window: self)
+    @debug = false
 
     @space = CP::Space.new
 
@@ -35,7 +36,7 @@ class GameWindow < Gosu::Window
   def draw
     @debug_dialog.draw
     @track.draw
-    @car.draw
+    @car.draw(debug: @debug)
   end
 
   def load_map!
@@ -48,6 +49,10 @@ class GameWindow < Gosu::Window
   def load_car!
     load('./car.rb')
     @car = Car.new(x: WIDTH / 2, y: HEIGHT / 2, space: @space)
+  end
+
+  def enable_debug!
+    @debug = true
   end
 end
 

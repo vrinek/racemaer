@@ -15,7 +15,6 @@ class Car
   attr_reader :sprite
   attr_reader :rigid_body
   attr_reader :angular_velocity
-  attr_reader :x, :y, :angle
 
   def initialize(x:, y:, space:)
     @sprite = Gosu::Image.new('assets/Cars/car_blue_1.png', retro: true)
@@ -26,7 +25,6 @@ class Car
     @angular_velocity = 0
     rigid_body.p.x = x
     rigid_body.p.y = y
-    @angle = 0
   end
 
   def update
@@ -43,11 +41,18 @@ class Car
     turn(dt)
   end
 
-  def draw
+  def draw(debug: false)
     sprite.draw_rot(rigid_body.p.x, rigid_body.p.y, Z_ORDER, angle, 0.5, 0.6, SPRITE_SCALE, SPRITE_SCALE)
+
+    return unless debug
+    draw_direction_vector
   end
 
   private
+
+  def angle
+    rigid_body.a.radians_to_gosu
+  end
 
   def velocity
     rigid_body.v.length
@@ -77,11 +82,23 @@ class Car
   end
 
   def direction_vector
-    CP::Vec2.for_angle(angle.gosu_to_radians)
+    CP::Vec2.for_angle(rigid_body.a)
+  end
+
+  def draw_direction_vector
+    start = rigid_body.pos
+    finish = start + direction_vector * 50
+    Gosu.draw_line(
+      start.x, start.y, Gosu::Color::WHITE,
+      finish.x, finish.y, Gosu::Color::WHITE,
+      Z_ORDER + 1
+    )
   end
 
   def turn(dt)
-    @angle += angular_velocity * (velocity * dt)
+    diff = (angular_velocity * (velocity * dt)).gosu_to_radians - 0.gosu_to_radians
+    rigid_body.a += diff
+
     @angular_velocity *= ANGULAR_FRICTION
   end
 end
