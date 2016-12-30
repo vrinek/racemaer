@@ -47,8 +47,7 @@ class GameWindow < Gosu::Window
 
   def load_car!
     load('./car.rb')
-    @car = Car.new(WIDTH / 2, HEIGHT / 2)
-    @space.add_body(@car.rigid_body)
+    @car = Car.new(x: WIDTH / 2, y: HEIGHT / 2, space: @space)
   end
 end
 

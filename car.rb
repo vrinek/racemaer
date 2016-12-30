@@ -17,14 +17,15 @@ class Car
   attr_reader :angular_velocity
   attr_reader :x, :y, :angle
 
-  def initialize(initial_x, initial_y)
+  def initialize(x:, y:, space:)
     @sprite = Gosu::Image.new('assets/Cars/car_blue_1.png', retro: true)
 
     @rigid_body = CP::Body.new(1, 1)
+    space.add_body(rigid_body)
 
     @angular_velocity = 0
-    rigid_body.p.x = initial_x
-    rigid_body.p.y = initial_y
+    rigid_body.p.x = x
+    rigid_body.p.y = y
     @angle = 0
   end
 
