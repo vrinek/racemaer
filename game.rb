@@ -11,6 +11,8 @@ class GameWindow < Gosu::Window
   WIDTH = Track::TILE_SIZE * 10
   HEIGHT = Track::TILE_SIZE * 6
 
+  DAMPING = 0.3
+
   def initialize
     super(WIDTH, HEIGHT)
     self.caption = 'Gosu Tutorial Game'
@@ -22,7 +24,7 @@ class GameWindow < Gosu::Window
 
     load_map!
     load_car!
-    @space.damping = Car::LINEAR_FRICTION
+    @space.damping = DAMPING
   end
 
   def update

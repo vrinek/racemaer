@@ -3,14 +3,11 @@ class Car
   Z_ORDER = 5
   SPRITE_SCALE = 0.5
 
-  LINEAR_ACCELERATION = 540 # 9 * 60 # 0.15 * 60
-  BRAKING_POWER = 1080 # 0.3 * 60 * 60
-  LINEAR_FRICTION = 0.3 # ~0.98**60
-  # Top speed = 0.15 / (1 - 0.98) * 0.98 = 7.35px/fr = 441px/sec
+  LINEAR_ACCELERATION = 540
+  BRAKING_POWER = 1080 # TODO: find a proper value for this
 
   ANGULAR_ACCELERATION = 0.1
   ANGULAR_FRICTION = 0.9
-  # Top angular velocity = 0.07 / (1 - 0.9) * 0.9 = 0.63deg/fr = 37.8deg/sec
 
   attr_reader :sprite
   attr_reader :rigid_body
