@@ -1,3 +1,5 @@
+require_relative './debug_collision_shape.rb'
+
 # Player car
 class Car
   Z_ORDER = 5
@@ -10,18 +12,28 @@ class Car
   ANGULAR_FRICTION = 0.9
 
   attr_reader :sprite
-  attr_reader :rigid_body
+  attr_reader :rigid_body, :collision_shape
   attr_reader :angular_velocity
 
   def initialize(x:, y:, space:)
     @sprite = Gosu::Image.new('assets/Cars/car_blue_1.png', retro: true)
 
-    @rigid_body = CP::Body.new(1, 1)
-    space.add_body(rigid_body)
-
-    @angular_velocity = 0
+    @rigid_body = CP::Body.new(1, 100)
     rigid_body.p.x = x
     rigid_body.p.y = y
+
+    verts = [
+      CP::Vec2.new(+sprite.height / 2, +sprite.width / 2) * SPRITE_SCALE,
+      CP::Vec2.new(+sprite.height / 2, -sprite.width / 2) * SPRITE_SCALE,
+      CP::Vec2.new(-sprite.height / 2, -sprite.width / 2) * SPRITE_SCALE,
+      CP::Vec2.new(-sprite.height / 2, +sprite.width / 2) * SPRITE_SCALE
+    ]
+    @collision_shape = CP::Shape::Poly.new(rigid_body, verts, CP::Vec2::ZERO)
+
+    @angular_velocity = 0
+
+    space.add_body(rigid_body)
+    space.add_shape(collision_shape)
   end
 
   def update
@@ -39,10 +51,11 @@ class Car
   end
 
   def draw(debug: false)
-    sprite.draw_rot(rigid_body.p.x, rigid_body.p.y, Z_ORDER, angle, 0.5, 0.6, SPRITE_SCALE, SPRITE_SCALE)
+    sprite.draw_rot(rigid_body.p.x, rigid_body.p.y, Z_ORDER, angle, 0.5, 0.5, SPRITE_SCALE, SPRITE_SCALE)
 
     return unless debug
     draw_direction_vector
+    DebugCollisionShape.new(collision_shape).draw
   end
 
   private

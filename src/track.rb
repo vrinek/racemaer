@@ -21,10 +21,10 @@ class Track
   end
 
   def update
-    # noop
+    # nothing to do
   end
 
-  def draw
+  def draw(debug: false)
     @map['layers'].reverse_each do |layer|
       z = Z_ORDERS.to_a[layer['z_order']]
       layer['map'].each_with_index do |row, y|

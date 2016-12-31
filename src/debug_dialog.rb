@@ -18,7 +18,7 @@ class DebugDialog
     end
   end
 
-  def draw
+  def draw(debug: false)
     return unless @window.text_input
 
     Gosu::Image.from_text(@window.text_input.text, FONT_SIZE)
@@ -30,9 +30,14 @@ class DebugDialog
   def parse(text)
     case text
     when /^reload map$/
-      @window.load_map!
+      # @window.load_map!
+      puts 'Currently broken, sorry'
     when /^reload car$/
-      @window.load_car!
+      # @window.load_car!
+      puts 'Currently broken, sorry'
+    when /^reload tire$/
+      # @window.load_loose_tire!
+      puts 'Currently broken, sorry'
     when /^debug on$/
       @window.enable_debug!
     end

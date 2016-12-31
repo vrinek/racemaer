@@ -22,35 +22,41 @@ class GameWindow < Gosu::Window
 
     @space = CP::Space.new
 
+    @objects = [@debug_dialog]
+
     load_map!
     load_car!
+    load_loose_tires!
     @space.damping = DAMPING
   end
 
   def update
-    @debug_dialog.update
-    @track.update
-    @car.update
+    @objects.each(&:update)
 
     @space.step(update_interval / 1000)
   end
 
   def draw
-    @debug_dialog.draw
-    @track.draw
-    @car.draw(debug: @debug)
+    @objects.each { |o| o.draw(debug: @debug) }
   end
 
   def load_map!
     current_map = File.open('maps/test_track_1.json') do |file|
       JSON.load(file)
     end
-    @track = Track.new(map: current_map)
+    @objects << Track.new(map: current_map)
   end
 
   def load_car!
     load('./src/car.rb')
-    @car = Car.new(x: WIDTH / 2, y: HEIGHT / 2, space: @space)
+    @objects << Car.new(x: WIDTH / 2, y: HEIGHT / 2, space: @space)
+  end
+
+  def load_loose_tires!
+    load('./src/loose_tire.rb')
+    @objects << LooseTire.new(x: WIDTH / 4, y: HEIGHT / 4, space: @space)
+    @objects << LooseTire.new(x: WIDTH / 4 + 30, y: HEIGHT / 4, space: @space)
+    @objects << LooseTire.new(x: WIDTH / 4 + 15, y: HEIGHT / 4 + 25, space: @space)
   end
 
   def enable_debug!
