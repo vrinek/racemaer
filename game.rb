@@ -3,8 +3,8 @@ require 'json'
 require 'gosu'
 require 'chipmunk'
 
-require_relative './debug_dialog.rb'
-require_relative './track.rb'
+require_relative './src/debug_dialog.rb'
+require_relative './src/track.rb'
 
 # Main game window
 class GameWindow < Gosu::Window
@@ -47,7 +47,7 @@ class GameWindow < Gosu::Window
   end
 
   def load_car!
-    load('./car.rb')
+    load('./src/car.rb')
     @car = Car.new(x: WIDTH / 2, y: HEIGHT / 2, space: @space)
   end
 
