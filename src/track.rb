@@ -1,4 +1,5 @@
 require_relative './debug_collision_shape.rb'
+require_relative './debug_track_tile.rb'
 
 # Race track to drive on
 class Track
@@ -139,6 +140,9 @@ class Track
 
     return unless debug
     collision_shapes.each { |shape| DebugCollisionShape.new(shape).draw }
+    each_tile_of_layer(@map['layers'][0]) do |tile_index, x, y|
+      DebugTrackTile.new(x, y, tile_index).draw
+    end
   end
 
   private
