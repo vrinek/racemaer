@@ -2,7 +2,7 @@
 class DebugDialog
   X = 0
   Y = 0
-  Z_ORDER = 10
+  Z_ORDER = 11
   FONT_SIZE = 16 # 16px line height
 
   def initialize(window:)

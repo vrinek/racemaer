@@ -1,4 +1,5 @@
 require_relative './debug_collision_shape.rb'
+require_relative './debug_direction.rb'
 
 # Player car
 class Car
@@ -54,7 +55,7 @@ class Car
     sprite.draw_rot(rigid_body.p.x, rigid_body.p.y, Z_ORDER, angle, 0.5, 0.5, SPRITE_SCALE, SPRITE_SCALE)
 
     return unless debug
-    draw_direction_vector
+    DebugDirection.new(rigid_body).draw
     DebugCollisionShape.new(collision_shape).draw
   end
 
@@ -93,16 +94,6 @@ class Car
 
   def direction_vector
     CP::Vec2.for_angle(rigid_body.a)
-  end
-
-  def draw_direction_vector
-    start = rigid_body.pos
-    finish = start + direction_vector * 50
-    Gosu.draw_line(
-      start.x, start.y, Gosu::Color::WHITE,
-      finish.x, finish.y, Gosu::Color::WHITE,
-      Z_ORDER + 1
-    )
   end
 
   def turn(dt)

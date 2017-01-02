@@ -38,18 +38,20 @@ class GameWindow < Gosu::Window
 
   def draw
     @objects.each { |o| o.draw(debug: @debug) }
+    return unless @debug
+    draw_debug_overlay
   end
 
   def load_map!
     current_map = File.open('maps/test_track_1.json') do |file|
       JSON.load(file)
     end
-    @objects << Track.new(map: current_map)
+    @objects << Track.new(map: current_map, space: @space)
   end
 
   def load_car!
     load('./src/car.rb')
-    @objects << Car.new(x: WIDTH / 2, y: HEIGHT / 2, space: @space)
+    @objects << Car.new(x: WIDTH / 2, y: HEIGHT / 4, space: @space)
   end
 
   def load_loose_tires!
@@ -61,6 +63,11 @@ class GameWindow < Gosu::Window
 
   def enable_debug!
     @debug = true
+  end
+
+  def draw_debug_overlay
+    color = Gosu::Color.rgba(0, 0, 0, 128)
+    Gosu.draw_rect(0, 0, WIDTH, HEIGHT, color, 10)
   end
 end
 
