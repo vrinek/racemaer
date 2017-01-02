@@ -19,17 +19,8 @@ class Car
   def initialize(x:, y:, space:)
     @sprite = Gosu::Image.new('assets/Cars/car_blue_1.png', retro: true)
 
-    @rigid_body = CP::Body.new(1, 100)
-    rigid_body.p.x = x
-    rigid_body.p.y = y
-
-    verts = [
-      CP::Vec2.new(+sprite.height / 2, +sprite.width / 2) * SPRITE_SCALE,
-      CP::Vec2.new(+sprite.height / 2, -sprite.width / 2) * SPRITE_SCALE,
-      CP::Vec2.new(-sprite.height / 2, -sprite.width / 2) * SPRITE_SCALE,
-      CP::Vec2.new(-sprite.height / 2, +sprite.width / 2) * SPRITE_SCALE
-    ]
-    @collision_shape = CP::Shape::Poly.new(rigid_body, verts, CP::Vec2::ZERO)
+    initialize_rigid_body(x, y)
+    initialize_collision_shape
 
     @angular_velocity = 0
 
@@ -60,6 +51,27 @@ class Car
   end
 
   private
+
+  def initialize_rigid_body(x, y)
+    @rigid_body = CP::Body.new(1, 100)
+    rigid_body.p.x = x
+    rigid_body.p.y = y
+  end
+
+  def initialize_collision_shape
+    pad = 8
+    verts = [
+      CP::Vec2.new(+sprite.height / 2 - pad, +sprite.width / 2      ) * SPRITE_SCALE,
+      CP::Vec2.new(+sprite.height / 2,       +sprite.width / 2 - pad) * SPRITE_SCALE,
+      CP::Vec2.new(+sprite.height / 2,       -sprite.width / 2 + pad) * SPRITE_SCALE,
+      CP::Vec2.new(+sprite.height / 2 - pad, -sprite.width / 2      ) * SPRITE_SCALE,
+      CP::Vec2.new(-sprite.height / 2 + pad, -sprite.width / 2      ) * SPRITE_SCALE,
+      CP::Vec2.new(-sprite.height / 2,       -sprite.width / 2 + pad) * SPRITE_SCALE,
+      CP::Vec2.new(-sprite.height / 2,       +sprite.width / 2 - pad) * SPRITE_SCALE,
+      CP::Vec2.new(-sprite.height / 2 + pad, +sprite.width / 2      ) * SPRITE_SCALE,
+    ]
+    @collision_shape = CP::Shape::Poly.new(rigid_body, verts, CP::Vec2::ZERO)
+  end
 
   def angle
     rigid_body.a.radians_to_gosu
