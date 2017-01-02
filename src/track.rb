@@ -115,14 +115,19 @@ class Track
   }
 
   attr_reader :static_body
-  attr_reader :collision_shapes
+  attr_reader :collision_shapes, :flag_shape
+  attr_reader :lap
 
   def initialize(map:, space:)
+    @lap = 0
     @map = map
     initialize_tiles
-    @static_body = CP::StaticBody.new
+    initialize_static_body
     initialize_collision_shapes
     collision_shapes.each { |shape| space.add_shape(shape) }
+    initialize_flag(from: map['flag']['from'], to: map['flag']['to'])
+    space.add_shape(flag_shape)
+    space.add_collision_func(:flag, :car, &flag_collision_func)
   end
 
   def update
@@ -143,6 +148,7 @@ class Track
     each_tile_of_layer(@map['layers'][0]) do |tile_index, x, y|
       DebugTrackTile.new(x, y, tile_index).draw
     end
+    DebugCollisionShape.new(flag_shape).draw
   end
 
   def pole_position
@@ -150,6 +156,10 @@ class Track
   end
 
   private
+
+  def initialize_static_body
+    @static_body = CP::StaticBody.new
+  end
 
   def initialize_tiles
     @tiles = {}
@@ -187,6 +197,38 @@ class Track
           @collision_shapes << CP::Shape::Poly.new(static_body, verts, offset)
         end
       end
+    end
+  end
+
+  def initialize_flag(from:, to:)
+    x1, y1 = *from.map { |n| n * TILE_SIZE }
+    x2, y2 = *to.map { |n| n * TILE_SIZE }
+
+    verts = [
+      CP::Vec2.new(x1 + 10, y1),
+      CP::Vec2.new(x1, y1),
+      CP::Vec2.new(x2, y2),
+      CP::Vec2.new(x2 + 10, y2)
+    ]
+    @flag_shape = CP::Shape::Poly.new(static_body, verts)
+    flag_shape.sensor = true
+    flag_shape.collision_type = :flag
+  end
+
+  def flag_collision_func
+    last_flag_time = nil
+    -> (arbiter) do
+      if arbiter.first_contact?
+        current_time = Time.now
+        @lap += 1
+        if last_flag_time
+          lap_time = current_time - last_flag_time
+          puts lap_time
+        end
+        puts "Lap #{lap}"
+        last_flag_time = current_time
+      end
+      true
     end
   end
 

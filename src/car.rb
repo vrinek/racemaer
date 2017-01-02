@@ -71,6 +71,7 @@ class Car
       CP::Vec2.new(-sprite.height / 2 + pad, +sprite.width / 2      ) * SPRITE_SCALE,
     ]
     @collision_shape = CP::Shape::Poly.new(rigid_body, verts, CP::Vec2::ZERO)
+    collision_shape.collision_type = :car
   end
 
   def angle
