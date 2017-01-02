@@ -46,12 +46,15 @@ class GameWindow < Gosu::Window
     current_map = File.open('maps/test_track_1.json') do |file|
       JSON.load(file)
     end
-    @objects << Track.new(map: current_map, space: @space)
+    track = Track.new(map: current_map, space: @space)
+    @objects << track
+    @pole_position = track.pole_position
   end
 
   def load_car!
     load('./src/car.rb')
-    @objects << Car.new(x: WIDTH / 2, y: HEIGHT / 4, space: @space)
+    x, y = *@pole_position
+    @objects << Car.new(x: x, y: y, space: @space)
   end
 
   def load_loose_tires!

@@ -145,6 +145,10 @@ class Track
     end
   end
 
+  def pole_position
+    @map['pole_position'].map { |n| n * TILE_SIZE + TILE_SIZE / 2 }
+  end
+
   private
 
   def initialize_tiles
