@@ -1,7 +1,6 @@
 # Draws a debug view of a collision shape
 class DebugCollisionShape
   Z_ORDER = 11
-  COLOR = Gosu::Color::CYAN
 
   attr_reader :collision_shape
 
@@ -18,6 +17,14 @@ class DebugCollisionShape
   end
 
   private
+
+  def color
+    if rigid_body.static?
+      Gosu::Color::GREEN
+    else
+      Gosu::Color::CYAN
+    end
+  end
 
   def rigid_body
     collision_shape.body
@@ -37,8 +44,8 @@ class DebugCollisionShape
       finish = rigid_body.pos + next_vert.rotate(direction_vector)
 
       Gosu.draw_line(
-        start.x, start.y, COLOR,
-        finish.x, finish.y, COLOR,
+        start.x, start.y, color,
+        finish.x, finish.y, color,
         Z_ORDER
       )
     end
@@ -57,8 +64,8 @@ class DebugCollisionShape
       finish = rigid_body.pos + next_offset
 
       Gosu.draw_line(
-        start.x, start.y, Gosu::Color::CYAN,
-        finish.x, finish.y, Gosu::Color::CYAN,
+        start.x, start.y, color,
+        finish.x, finish.y, color,
         Z_ORDER
       )
     end
