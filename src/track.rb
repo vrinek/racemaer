@@ -1,5 +1,6 @@
 require_relative './debug_collision_shape.rb'
 require_relative './debug_track_tile.rb'
+require_relative './checkpoint.rb'
 
 # Race track to drive on
 class Track
@@ -115,8 +116,8 @@ class Track
   }
 
   attr_reader :static_body
-  attr_reader :collision_shapes, :checkpoint_shapes
-  attr_reader :lap
+  attr_reader :collision_shapes
+  attr_reader :lap, :checkpoints
 
   def initialize(map:, space:)
     @lap = 0
@@ -126,12 +127,12 @@ class Track
     initialize_collision_shapes
     collision_shapes.each { |shape| space.add_shape(shape) }
     initialize_checkpoints
-    checkpoint_shapes.each { |shape| space.add_shape(shape) }
+    checkpoints.each { |checkpoint| space.add_shape(checkpoint.trigger_shape) }
     space.add_collision_func(:checkpoint, :car, &flag_collision_func)
   end
 
   def update
-    # nothing to do
+    checkpoints.each(&:update)
   end
 
   def draw(debug: false)
@@ -142,10 +143,10 @@ class Track
         sprite.draw(x * TILE_SIZE, y * TILE_SIZE, z)
       end
     end
+    checkpoints.each { |checkpoint| checkpoint.draw(debug: debug) }
 
     return unless debug
     collision_shapes.each { |shape| DebugCollisionShape.new(shape).draw }
-    checkpoint_shapes.each { |shape| DebugCollisionShape.new(shape).draw }
     each_tile_of_layer(@map['layers'][0]) do |tile_index, x, y|
       DebugTrackTile.new(x, y, tile_index).draw
     end
@@ -201,33 +202,26 @@ class Track
   end
 
   def initialize_checkpoints
-    @checkpoint_shapes = []
+    @checkpoints = []
     @map['checkpoints'].each_with_index do |(start, finish), index|
       is_flag = index == @map['flag_index']
-      initialize_checkpoint(from: start, to: finish, is_flag: is_flag)
+      checkpoint = Checkpoint.new(
+        from: start, to: finish, static_body: static_body
+      )
+      checkpoint.trigger_shape.object = { is_flag: is_flag }
+      checkpoints << checkpoint
     end
-  end
-
-  def initialize_checkpoint(from:, to:, is_flag:)
-    vec1 = CP::Vec2.new(*from.map { |n| n * TILE_SIZE })
-    vec2 = CP::Vec2.new(*to.map { |n| n * TILE_SIZE })
-
-    checkpoint_shape = CP::Shape::Segment.new(static_body, vec1, vec2, 10)
-    checkpoint_shape.sensor = true
-    checkpoint_shape.collision_type = :checkpoint
-    checkpoint_shape.object = { is_flag: is_flag }
-    @checkpoint_shapes << checkpoint_shape
   end
 
   def flag_collision_func
     last_flag_time = nil
 
     # Chipmunk expects this to return true to continue processing the collision
-    -> (arbiter) do
+    lambda do |arbiter|
       return true unless arbiter.first_contact?
 
-      checkpoint = arbiter.shapes.first
-      if checkpoint.object[:is_flag]
+      checkpoint = arbiter.shapes.first.object
+      if checkpoint[:is_flag]
         count_lap
         print_lap_time(last_flag_time)
         last_flag_time = Time.now

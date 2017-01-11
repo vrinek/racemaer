@@ -21,7 +21,11 @@ You are a racing teacher. You're teaching an AI how to drive and win the champio
         - [x] Barriers
         - [ ] Tarmac Vs Sandtraps friction
 - [ ] Gameplay
-    - [x] Recognise laps
+    - [ ] Recognise laps
+        - [x] Implement checkpoints
+        - [x] Define _flag_ checkpoint
+        - [ ] Incrementally activate next checkpoint
+        - [ ] Detect going backwards (and disable checkpoints)
     - [ ] Recognise victory _(3 laps?)_
     - [x] Keep time
 - [ ] UI
