@@ -11,6 +11,8 @@ You are a racing teacher. You're teaching an AI how to drive and win the champio
     - [x] Turning
     - [x] Braking
     - [ ] Reverse
+        - [x] Go reverse
+        - [ ] Steer reverse
 - [ ] Race track
     - [x] Sprites
         - [x] Road

@@ -10,7 +10,7 @@ class Car
   MOMENT_OF_INERTIA = 5000
 
   LINEAR_ACCELERATION = 5400
-  BRAKING_POWER = 1080 # TODO: find a proper value for this
+  REVERSE_ACCELERATION = LINEAR_ACCELERATION / 3
 
   ANGULAR_ACCELERATION = 0.1
   ANGULAR_FRICTION = 0.9
@@ -99,7 +99,7 @@ class Car
 
   def brake
     # TODO: Stop applying force when velocity is backwards
-    @rigid_body.apply_force(direction_vector * BRAKING_POWER * -1, CP::Vec2::ZERO)
+    @rigid_body.apply_force(direction_vector * REVERSE_ACCELERATION * -1, CP::Vec2::ZERO)
   end
 
   def apply_tires_force(dt)
