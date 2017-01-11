@@ -16,12 +16,12 @@ You are a racing teacher. You're teaching an AI how to drive and win the champio
         - [x] Road
         - [x] Background
     - [ ] Physics _via Chipmunk_
-        - [ ] Barriers
+        - [x] Barriers
         - [ ] Tarmac Vs Sandtraps friction
 - [ ] Gameplay
-    - [ ] Recognise laps
-    - [ ] Recognise victory
-    - [ ] Keep time
+    - [x] Recognise laps
+    - [ ] Recognise victory _(3 laps?)_
+    - [x] Keep time
 - [ ] UI
     - [ ] Menus
         - [ ] Track select

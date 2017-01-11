@@ -6,7 +6,10 @@ class Car
   Z_ORDER = 5
   SPRITE_SCALE = 0.5
 
-  LINEAR_ACCELERATION = 540
+  MASS = 10
+  MOMENT_OF_INERTIA = 5000
+
+  LINEAR_ACCELERATION = 5400
   BRAKING_POWER = 1080 # TODO: find a proper value for this
 
   ANGULAR_ACCELERATION = 0.1
@@ -53,7 +56,7 @@ class Car
   private
 
   def initialize_rigid_body(x, y)
-    @rigid_body = CP::Body.new(1, 100)
+    @rigid_body = CP::Body.new(MASS, MOMENT_OF_INERTIA)
     rigid_body.p.x = x
     rigid_body.p.y = y
   end
@@ -101,7 +104,7 @@ class Car
 
   def apply_tires_force(dt)
     orthogonal_direction = CP::Vec2.for_angle(((angle + 90) % 360).gosu_to_radians)
-    tires_force = (rigid_body.v / dt).project(orthogonal_direction) * -1
+    tires_force = (rigid_body.v / dt).project(orthogonal_direction) * -MASS
     rigid_body.apply_force(tires_force, CP::Vec2::ZERO)
   end
 
@@ -112,6 +115,7 @@ class Car
   def turn(dt)
     diff = (angular_velocity * (velocity * dt)).gosu_to_radians - 0.gosu_to_radians
     rigid_body.a += diff
+    rigid_body.w *= ANGULAR_FRICTION
 
     @angular_velocity *= ANGULAR_FRICTION
   end
