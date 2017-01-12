@@ -6,7 +6,9 @@ require 'chipmunk'
 require_relative './src/debug_dialog.rb'
 require_relative './src/track.rb'
 require_relative './src/interfaced_array.rb'
-require_relative './src/game_object_interface.rb'
+require_relative './src/interface/game_object.rb'
+require_relative './src/interface/presentation.rb'
+require_relative './src/interface/commander.rb'
 require_relative './src/input/drive_car.rb'
 require_relative './src/presentation/present_car.rb'
 require_relative './src/presentation/debug_car.rb'
@@ -27,13 +29,12 @@ class GameWindow < Gosu::Window
 
     @space = CP::Space.new
 
-    @objects = InterfacedArray.new
-    @objects.interface = GameObjectInterface
-    @objects << debug_dialog
+    @objects = InterfacedArray.new(interface: GameObject)
+    @commanders = InterfacedArray.new(interface: Commander)
+    @presentations = InterfacedArray.new(interface: Presentation)
+    @debug_presentations = InterfacedArray.new(interface: Presentation)
 
-    @commanders = []
-    @presentations = []
-    @debug_presentations = []
+    @objects << debug_dialog
 
     load_map!
     load_car!

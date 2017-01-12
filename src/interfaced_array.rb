@@ -1,10 +1,12 @@
 # An array that only accepts objects that comply to a certain interface
 class InterfacedArray < Array
-  attr_accessor :interface
+  def initialize(interface:)
+    @interface = interface
+  end
 
   def << item
-    if interface && !matches_interface?(item)
-      fail "#{item} is missing #{missing_methods(item)} to comply with #{interface}"
+    if @interface && !matches_interface?(item)
+      fail "#{item} is missing #{missing_methods(item)} to comply with #{@interface}"
     end
 
     super(item)
@@ -23,6 +25,6 @@ class InterfacedArray < Array
   end
 
   def required_methods
-    interface.public_instance_methods - Object.public_instance_methods
+    @interface.public_instance_methods - Object.public_instance_methods
   end
 end
