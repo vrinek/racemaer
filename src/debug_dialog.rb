@@ -9,7 +9,7 @@ class DebugDialog
     @window = window
   end
 
-  def update
+  def update(commands:)
     if !@window.text_input && Gosu.button_down?(Gosu::KbBacktick)
       @window.text_input = Gosu::TextInput.new
     elsif @window.text_input && Gosu.button_down?(Gosu::KbReturn)

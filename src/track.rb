@@ -131,7 +131,7 @@ class Track
     space.add_collision_func(:checkpoint, :car, &flag_collision_func)
   end
 
-  def update
+  def update(commands:)
     checkpoints.each(&:update)
   end
 

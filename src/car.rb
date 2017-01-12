@@ -32,14 +32,17 @@ class Car
     space.add_shape(collision_shape)
   end
 
-  def update
+  def update(commands:)
     rigid_body.reset_forces
     dt = 1 / 60.0 # TEMP: approximation
 
-    turn_left(dt)  if Gosu.button_down? Gosu::KbLeft
-    turn_right(dt) if Gosu.button_down? Gosu::KbRight
-    accelerate     if Gosu.button_down? Gosu::KbUp
-    brake          if Gosu.button_down? Gosu::KbDown
+    actions = commands
+              .select { |cmd| cmd[:actor] == self }
+              .map { |cmd| cmd[:action] }
+    turn_left(dt)  if actions.include?(:turn_left)
+    turn_right(dt) if actions.include?(:turn_right)
+    accelerate     if actions.include?(:accelerate)
+    brake          if actions.include?(:brake)
 
     apply_tires_force(dt)
 

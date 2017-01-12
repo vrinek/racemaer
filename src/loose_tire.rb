@@ -22,7 +22,7 @@ class LooseTire
     space.add_shape(collision_shape)
   end
 
-  def update
+  def update(commands:)
     # nothing yet
   end
 

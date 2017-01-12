@@ -7,6 +7,7 @@ require_relative './src/debug_dialog.rb'
 require_relative './src/track.rb'
 require_relative './src/interfaced_array.rb'
 require_relative './src/game_object_interface.rb'
+require_relative './src/input/drive_car.rb'
 
 # Main game window
 class GameWindow < Gosu::Window
@@ -28,6 +29,8 @@ class GameWindow < Gosu::Window
     @objects.interface = GameObjectInterface
     @objects << debug_dialog
 
+    @commanders = []
+
     load_map!
     load_car!
     load_loose_tires!
@@ -35,7 +38,11 @@ class GameWindow < Gosu::Window
   end
 
   def update
-    @objects.each(&:update)
+    commands = @commanders.map(&:commands).flatten
+
+    @objects.each do |obj|
+      obj.update(commands: commands)
+    end
 
     @space.step(update_interval / 1000)
   end
@@ -58,7 +65,9 @@ class GameWindow < Gosu::Window
   def load_car!
     load('./src/car.rb')
     x, y = *@pole_position
-    @objects << Car.new(x: x, y: y, space: @space)
+    car = Car.new(x: x, y: y, space: @space)
+    @objects << car
+    @commanders << DriveCar.new(actor: car)
   end
 
   def load_loose_tires!
