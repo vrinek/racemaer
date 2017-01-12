@@ -37,6 +37,7 @@ You are a racing teacher. You're teaching an AI how to drive and win the champio
         - [ ] Speed
         - [ ] Lap time
 - [ ] Graphics
+    - [ ] Camera
     - [ ] Drift marks
     - [ ] Dust particles
 - [ ] Sounds

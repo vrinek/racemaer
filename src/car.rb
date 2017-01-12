@@ -1,3 +1,4 @@
+require 'gosu'
 require_relative './debug_collision_shape.rb'
 require_relative './debug_direction.rb'
 

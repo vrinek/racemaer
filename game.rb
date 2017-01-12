@@ -5,6 +5,8 @@ require 'chipmunk'
 
 require_relative './src/debug_dialog.rb'
 require_relative './src/track.rb'
+require_relative './src/interfaced_array.rb'
+require_relative './src/game_object_interface.rb'
 
 # Main game window
 class GameWindow < Gosu::Window
@@ -17,12 +19,14 @@ class GameWindow < Gosu::Window
     super(WIDTH, HEIGHT)
     self.caption = 'Gosu Tutorial Game'
 
-    @debug_dialog = DebugDialog.new(window: self)
+    debug_dialog = DebugDialog.new(window: self)
     @debug = false
 
     @space = CP::Space.new
 
-    @objects = [@debug_dialog]
+    @objects = InterfacedArray.new
+    @objects.interface = GameObjectInterface
+    @objects << debug_dialog
 
     load_map!
     load_car!
