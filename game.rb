@@ -69,7 +69,7 @@ class GameWindow < Gosu::Window
   end
 
   def load_car!
-    load('./src/car.rb')
+    load('./src/gameplay/car.rb')
     x, y = *@pole_position
     car = Car.new(x: x, y: y, space: @space)
     @objects << car
