@@ -12,6 +12,8 @@ require_relative './src/interface/commander.rb'
 require_relative './src/input/drive_car.rb'
 require_relative './src/presentation/present_car.rb'
 require_relative './src/presentation/debug_car.rb'
+require_relative './src/presentation/present_loose_tire.rb'
+require_relative './src/presentation/debug_loose_tire.rb'
 
 # Main game window
 class GameWindow < Gosu::Window
@@ -80,10 +82,18 @@ class GameWindow < Gosu::Window
   end
 
   def load_loose_tires!
-    load('./src/loose_tire.rb')
-    @objects << LooseTire.new(x: WIDTH / 4, y: HEIGHT / 4, space: @space)
-    @objects << LooseTire.new(x: WIDTH / 4 + 30, y: HEIGHT / 4, space: @space)
-    @objects << LooseTire.new(x: WIDTH / 4 + 15, y: HEIGHT / 4 + 25, space: @space)
+    load('./src/gameplay/loose_tire.rb')
+
+    initialize_tire(WIDTH / 4, HEIGHT / 4)
+    initialize_tire(WIDTH / 4 + 30, HEIGHT / 4)
+    initialize_tire(WIDTH / 4 + 15, HEIGHT / 4 + 25)
+  end
+
+  def initialize_tire(x, y)
+    tire = LooseTire.new(x: x, y: y, space: @space)
+    @objects << tire
+    @presentations << PresentLooseTire.new(model: tire)
+    @debug_presentations << DebugLooseTire.new(model: tire)
   end
 
   def enable_debug!
