@@ -2,10 +2,10 @@ require_relative '../debug_collision_shape.rb'
 
 class DebugLooseTire
   def initialize(model:)
-    @model = model
+    @debug_collision_shape = DebugCollisionShape.new(model.collision_shape)
   end
 
   def draw
-    DebugCollisionShape.new(@model.collision_shape).draw
+    @debug_collision_shape.draw
   end
 end

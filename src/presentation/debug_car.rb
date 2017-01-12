@@ -4,11 +4,12 @@ require_relative '../debug_direction.rb'
 # 2D debug presentaion of the car
 class DebugCar
   def initialize(model:)
-    @model = model
+    @debug_direction = DebugDirection.new(model.rigid_body)
+    @debug_collision_shape = DebugCollisionShape.new(model.collision_shape)
   end
 
   def draw
-    DebugDirection.new(@model.rigid_body).draw
-    DebugCollisionShape.new(@model.collision_shape).draw
+    @debug_direction.draw
+    @debug_collision_shape.draw
   end
 end
