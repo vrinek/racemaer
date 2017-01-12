@@ -4,8 +4,8 @@ require_relative './debug_direction.rb'
 
 # Player car
 class Car
-  Z_ORDER = 5
-  SPRITE_SCALE = 0.5
+  WIDTH = 32
+  LENGTH = 64
 
   MASS = 10
   MOMENT_OF_INERTIA = 5000
@@ -16,13 +16,10 @@ class Car
   ANGULAR_ACCELERATION = 0.1
   ANGULAR_FRICTION = 0.9
 
-  attr_reader :sprite
   attr_reader :rigid_body, :collision_shape
   attr_reader :angular_velocity
 
   def initialize(x:, y:, space:)
-    @sprite = Gosu::Image.new('assets/Cars/car_blue_1.png', retro: true)
-
     initialize_rigid_body(x, y)
     initialize_collision_shape
 
@@ -50,11 +47,17 @@ class Car
   end
 
   def draw(debug: false)
-    sprite.draw_rot(rigid_body.p.x, rigid_body.p.y, Z_ORDER, angle, 0.5, 0.5, SPRITE_SCALE, SPRITE_SCALE)
-
     return unless debug
     DebugDirection.new(rigid_body).draw
     DebugCollisionShape.new(collision_shape).draw
+  end
+
+  def presentation_view
+    {
+      x: rigid_body.pos.x,
+      y: rigid_body.pos.y,
+      angle: angle
+    }
   end
 
   private
@@ -68,14 +71,14 @@ class Car
   def initialize_collision_shape
     pad = 8
     verts = [
-      CP::Vec2.new(+sprite.height / 2 - pad, +sprite.width / 2      ) * SPRITE_SCALE,
-      CP::Vec2.new(+sprite.height / 2,       +sprite.width / 2 - pad) * SPRITE_SCALE,
-      CP::Vec2.new(+sprite.height / 2,       -sprite.width / 2 + pad) * SPRITE_SCALE,
-      CP::Vec2.new(+sprite.height / 2 - pad, -sprite.width / 2      ) * SPRITE_SCALE,
-      CP::Vec2.new(-sprite.height / 2 + pad, -sprite.width / 2      ) * SPRITE_SCALE,
-      CP::Vec2.new(-sprite.height / 2,       -sprite.width / 2 + pad) * SPRITE_SCALE,
-      CP::Vec2.new(-sprite.height / 2,       +sprite.width / 2 - pad) * SPRITE_SCALE,
-      CP::Vec2.new(-sprite.height / 2 + pad, +sprite.width / 2      ) * SPRITE_SCALE,
+      CP::Vec2.new(+LENGTH / 2 - pad, +WIDTH / 2      ),
+      CP::Vec2.new(+LENGTH / 2,       +WIDTH / 2 - pad),
+      CP::Vec2.new(+LENGTH / 2,       -WIDTH / 2 + pad),
+      CP::Vec2.new(+LENGTH / 2 - pad, -WIDTH / 2      ),
+      CP::Vec2.new(-LENGTH / 2 + pad, -WIDTH / 2      ),
+      CP::Vec2.new(-LENGTH / 2,       -WIDTH / 2 + pad),
+      CP::Vec2.new(-LENGTH / 2,       +WIDTH / 2 - pad),
+      CP::Vec2.new(-LENGTH / 2 + pad, +WIDTH / 2      ),
     ]
     @collision_shape = CP::Shape::Poly.new(rigid_body, verts, CP::Vec2::ZERO)
     collision_shape.collision_type = :car

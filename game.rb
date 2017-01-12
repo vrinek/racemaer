@@ -8,6 +8,7 @@ require_relative './src/track.rb'
 require_relative './src/interfaced_array.rb'
 require_relative './src/game_object_interface.rb'
 require_relative './src/input/drive_car.rb'
+require_relative './src/presentation/present_car.rb'
 
 # Main game window
 class GameWindow < Gosu::Window
@@ -30,6 +31,7 @@ class GameWindow < Gosu::Window
     @objects << debug_dialog
 
     @commanders = []
+    @presentations = []
 
     load_map!
     load_car!
@@ -49,6 +51,7 @@ class GameWindow < Gosu::Window
 
   def draw
     @objects.each { |o| o.draw(debug: @debug) }
+    @presentations.each(&:draw)
     return unless @debug
     draw_debug_overlay
   end
@@ -67,6 +70,7 @@ class GameWindow < Gosu::Window
     x, y = *@pole_position
     car = Car.new(x: x, y: y, space: @space)
     @objects << car
+    @presentations << PresentCar.new(model: car)
     @commanders << DriveCar.new(actor: car)
   end
 
