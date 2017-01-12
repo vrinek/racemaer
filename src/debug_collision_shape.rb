@@ -2,7 +2,7 @@
 class DebugCollisionShape
   Z_ORDER = 11
 
-  CIRCLE_STEPS = 6
+  CIRCLE_STEPS = 12
   DEGREES_PER_STEP = 360.0 / CIRCLE_STEPS
 
   attr_reader :collision_shape
@@ -55,7 +55,7 @@ class DebugCollisionShape
   end
 
   def polygon_side_edge(index)
-    index = 0 if collision_shape.num_verts >= index
+    index = 0 if index >= collision_shape.num_verts
     rigid_body.pos + collision_shape.vert(index).rotate(direction_vector)
   end
 
