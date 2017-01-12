@@ -31,25 +31,13 @@ class Car
 
   def update(commands:)
     rigid_body.reset_forces
-    dt = 1 / 60.0 # TEMP: approximation
 
-    actions = commands
-              .select { |cmd| cmd[:actor] == self }
-              .map { |cmd| cmd[:action] }
-    turn_left(dt)  if actions.include?(:turn_left)
-    turn_right(dt) if actions.include?(:turn_right)
-    accelerate     if actions.include?(:accelerate)
-    brake          if actions.include?(:brake)
-
-    apply_tires_force(dt)
-
-    turn(dt)
+    follow(commands.select { |cmd| cmd[:actor] == self })
+    apply_physics
   end
 
   def draw(debug: false)
-    return unless debug
-    DebugDirection.new(rigid_body).draw
-    DebugCollisionShape.new(collision_shape).draw
+    # noop
   end
 
   def presentation_view
@@ -61,6 +49,24 @@ class Car
   end
 
   private
+
+  def follow(commands)
+    dt = 1 / 60.0 # TEMP: approximation
+
+    actions = commands.map { |cmd| cmd[:action] }
+
+    turn_left(dt)  if actions.include?(:turn_left)
+    turn_right(dt) if actions.include?(:turn_right)
+    accelerate     if actions.include?(:accelerate)
+    brake          if actions.include?(:brake)
+  end
+
+  def apply_physics
+    dt = 1 / 60.0 # TEMP: approximation
+
+    apply_tires_force(dt)
+    turn(dt)
+  end
 
   def initialize_rigid_body(x, y)
     @rigid_body = CP::Body.new(MASS, MOMENT_OF_INERTIA)

@@ -9,6 +9,7 @@ require_relative './src/interfaced_array.rb'
 require_relative './src/game_object_interface.rb'
 require_relative './src/input/drive_car.rb'
 require_relative './src/presentation/present_car.rb'
+require_relative './src/presentation/debug_car.rb'
 
 # Main game window
 class GameWindow < Gosu::Window
@@ -32,6 +33,7 @@ class GameWindow < Gosu::Window
 
     @commanders = []
     @presentations = []
+    @debug_presentations = []
 
     load_map!
     load_car!
@@ -53,6 +55,7 @@ class GameWindow < Gosu::Window
     @objects.each { |o| o.draw(debug: @debug) }
     @presentations.each(&:draw)
     return unless @debug
+    @debug_presentations.each(&:draw)
     draw_debug_overlay
   end
 
@@ -72,6 +75,7 @@ class GameWindow < Gosu::Window
     @objects << car
     @presentations << PresentCar.new(model: car)
     @commanders << DriveCar.new(actor: car)
+    @debug_presentations << DebugCar.new(model: car)
   end
 
   def load_loose_tires!

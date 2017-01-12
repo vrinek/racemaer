@@ -18,6 +18,8 @@ class DebugCollisionShape
       draw_circle
     elsif collision_shape.is_a?(CP::Shape::Segment)
       draw_segment
+    else
+      puts "I don't know how to draw #{collision_shape.class}"
     end
   end
 
