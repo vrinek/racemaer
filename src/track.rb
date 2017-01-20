@@ -1,6 +1,5 @@
 require_relative './debug_collision_shape.rb'
 require_relative './debug_track_tile.rb'
-require_relative './checkpoint.rb'
 require_relative './tilesets.rb'
 
 # Race track to drive on
@@ -11,7 +10,7 @@ class Track
 
   attr_reader :static_body
   attr_reader :collision_shapes
-  attr_reader :lap, :checkpoints
+  attr_reader :lap
 
   def initialize(map:, space:)
     @lap = 0
@@ -21,13 +20,11 @@ class Track
     initialize_collision_shapes
     collision_shapes.each { |shape| space.add_shape(shape) }
 
-    @checkpoints = Checkpoint.new_with(map: @map, static_body: static_body, space: space)
-
     space.add_collision_func(:checkpoint, :car, &checkpoint_collision_func)
   end
 
   def update(commands:)
-    checkpoints.each(&:update)
+    # noop
   end
 
   def draw(debug: false)
@@ -38,7 +35,6 @@ class Track
         sprite.draw(x * TILE_SIZE, y * TILE_SIZE, z)
       end
     end
-    checkpoints.each { |checkpoint| checkpoint.draw(debug: debug) }
 
     return unless debug
     collision_shapes.each { |shape| DebugCollisionShape.new(shape).draw }

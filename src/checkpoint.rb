@@ -5,7 +5,8 @@ require_relative './track.rb'
 class Checkpoint
   attr_reader :trigger_shape
 
-  def self.new_with(map:, static_body:, space:)
+  def self.new_with(map:, space:)
+    static_body = CP::StaticBody.new
     checkpoints = []
 
     map['checkpoints'].each_with_index do |(start, finish), index|
@@ -31,7 +32,7 @@ class Checkpoint
     trigger_shape.collision_type = :checkpoint
   end
 
-  def update
+  def update(commands:)
     # noop
   end
 

@@ -5,6 +5,7 @@ require 'chipmunk'
 
 require_relative './src/debug_dialog.rb'
 require_relative './src/track.rb'
+require_relative './src/checkpoint.rb'
 require_relative './src/interfaced_array.rb'
 require_relative './src/interface/game_object.rb'
 require_relative './src/interface/presentation.rb'
@@ -39,7 +40,6 @@ class GameWindow < Gosu::Window
     @objects << debug_dialog
 
     load_map!
-    load_checkpoints!
     load_car!
     load_loose_tires!
     @space.damping = DAMPING
@@ -70,10 +70,9 @@ class GameWindow < Gosu::Window
     track = Track.new(map: current_map, space: @space)
     @objects << track
     @pole_position = track.pole_position
-  end
 
-  def load_checkpoints!
-    # noop
+    # Checkpoints
+    @objects += Checkpoint.new_with(map: current_map, space: @space)
   end
 
   def load_car!
