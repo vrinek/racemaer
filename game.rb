@@ -39,6 +39,7 @@ class GameWindow < Gosu::Window
     @objects << debug_dialog
 
     load_map!
+    load_checkpoints!
     load_car!
     load_loose_tires!
     @space.damping = DAMPING
@@ -69,6 +70,10 @@ class GameWindow < Gosu::Window
     track = Track.new(map: current_map, space: @space)
     @objects << track
     @pole_position = track.pole_position
+  end
+
+  def load_checkpoints!
+    # noop
   end
 
   def load_car!
