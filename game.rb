@@ -3,16 +3,22 @@ require 'json'
 require 'gosu'
 require 'chipmunk'
 
-require_relative './src/debug_dialog.rb'
-require_relative './src/track.rb'
-require_relative './src/checkpoint.rb'
 require_relative './src/interfaced_array.rb'
 require_relative './src/interface/game_object.rb'
 require_relative './src/interface/presentation.rb'
 require_relative './src/interface/commander.rb'
+
+require_relative './src/debug_dialog.rb'
+
+require_relative './src/track.rb'
+require_relative './src/checkpoint.rb'
+
 require_relative './src/input/drive_car.rb'
+require_relative './src/gameplay/car.rb'
 require_relative './src/presentation/present_car.rb'
 require_relative './src/presentation/debug_car.rb'
+
+require_relative './src/gameplay/loose_tire.rb'
 require_relative './src/presentation/present_loose_tire.rb'
 require_relative './src/presentation/debug_loose_tire.rb'
 
@@ -76,7 +82,6 @@ class GameWindow < Gosu::Window
   end
 
   def load_car!
-    load('./src/gameplay/car.rb')
     x, y = *@pole_position
     car = Car.new(x: x, y: y, space: @space)
     @objects << car
@@ -86,8 +91,6 @@ class GameWindow < Gosu::Window
   end
 
   def load_loose_tires!
-    load('./src/gameplay/loose_tire.rb')
-
     initialize_tire(WIDTH / 4, HEIGHT / 4)
     initialize_tire(WIDTH / 4 + 30, HEIGHT / 4)
     initialize_tire(WIDTH / 4 + 15, HEIGHT / 4 + 25)
