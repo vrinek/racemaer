@@ -11,7 +11,9 @@ require_relative './src/interface/commander.rb'
 require_relative './src/debug_dialog.rb'
 
 require_relative './src/track.rb'
+
 require_relative './src/checkpoint.rb'
+require_relative './src/presentation/debug_checkpoint.rb'
 
 require_relative './src/input/drive_car.rb'
 require_relative './src/gameplay/car.rb'
@@ -24,10 +26,12 @@ require_relative './src/presentation/debug_loose_tire.rb'
 
 # Main game window
 class GameWindow < Gosu::Window
-  WIDTH = Track::TILE_SIZE * 10
-  HEIGHT = Track::TILE_SIZE * 6
+  WIDTH = 1280
+  HEIGHT = 768
 
   DAMPING = 0.3
+
+  attr_reader :current_map
 
   def initialize
     super(WIDTH, HEIGHT)
@@ -46,6 +50,8 @@ class GameWindow < Gosu::Window
     @objects << debug_dialog
 
     load_map!
+    load_track!
+    load_checkpoints!
     load_car!
     load_loose_tires!
     @space.damping = DAMPING
@@ -69,16 +75,23 @@ class GameWindow < Gosu::Window
     draw_debug_overlay
   end
 
-  def load_map!
-    current_map = File.open('maps/test_track_1.json') do |file|
-      JSON.load(file)
-    end
+  def load_track!
     track = Track.new(map: current_map, space: @space)
     @objects << track
     @pole_position = track.pole_position
+  end
 
-    # Checkpoints
-    @objects += Checkpoint.new_with(map: current_map, space: @space)
+  def load_map!
+    @current_map = File.open('maps/test_track_1.json') do |file|
+      JSON.load(file)
+    end
+  end
+
+  def load_checkpoints!
+    Checkpoint.new_with(map: current_map, space: @space).each do |checkpoint|
+      @objects << checkpoint
+      @debug_presentations << DebugCheckpoint.new(model: checkpoint)
+    end
   end
 
   def load_car!

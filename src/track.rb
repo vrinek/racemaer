@@ -6,8 +6,6 @@ require_relative './tilesets.rb'
 class Track
   Z_ORDERS = 0...5
 
-  TILE_SIZE = 128
-
   attr_reader :static_body
   attr_reader :collision_shapes
   attr_reader :lap
@@ -32,7 +30,7 @@ class Track
       z = Z_ORDERS.to_a[layer['z_order']]
       each_tile_of_layer(layer) do |tile_index, x, y|
         sprite = @tiles[layer['tileset']][tile_index]
-        sprite.draw(x * TILE_SIZE, y * TILE_SIZE, z)
+        sprite.draw(x * @map['tilesize'], y * @map['tilesize'], z)
       end
     end
 
@@ -44,7 +42,7 @@ class Track
   end
 
   def pole_position
-    @map['pole_position'].map { |n| n * TILE_SIZE + TILE_SIZE / 2 }
+    @map['pole_position'].map { |n| n * @map['tilesize'] + @map['tilesize'] / 2 }
   end
 
   private
@@ -83,7 +81,7 @@ class Track
         shapes = tileset[:collision_shapes][tile_index]
         next unless shapes
 
-        offset = CP::Vec2.new(x * TILE_SIZE, y * TILE_SIZE)
+        offset = CP::Vec2.new(x * @map['tilesize'], y * @map['tilesize'])
         shapes.each do |vertice_data|
           verts = vertice_data.map { |(vx, vy)| CP::Vec2.new(vx, vy) }.reverse
           @collision_shapes << CP::Shape::Poly.new(static_body, verts, offset)
