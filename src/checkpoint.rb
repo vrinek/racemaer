@@ -7,17 +7,13 @@ class Checkpoint
 
   def self.new_with(map:, space:)
     static_body = CP::StaticBody.new
-    checkpoints = []
-
-    map['checkpoints'].each_with_index do |(start, finish), index|
-      is_flag = index == map['flag_index']
-      checkpoint = Checkpoint.new(
+    checkpoints = map['checkpoints'].map do |(start, finish)|
+      Checkpoint.new(
         from: start, to: finish, static_body: static_body
       )
-      checkpoint.trigger_shape.object = { is_flag: is_flag }
-      checkpoints << checkpoint
     end
 
+    checkpoints[map['flag_index']].trigger_shape.object[:is_flag] = true
     checkpoints.each { |checkpoint| space.add_shape(checkpoint.trigger_shape) }
 
     checkpoints
@@ -30,6 +26,7 @@ class Checkpoint
     @trigger_shape = CP::Shape::Segment.new(static_body, vec1, vec2, 10)
     trigger_shape.sensor = true
     trigger_shape.collision_type = :checkpoint
+    trigger_shape.object = { is_flag: false }
   end
 
   def update(commands:)
