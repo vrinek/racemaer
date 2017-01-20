@@ -12,7 +12,7 @@ require_relative './src/debug_dialog.rb'
 
 require_relative './src/track.rb'
 
-require_relative './src/checkpoint.rb'
+require_relative './src/gameplay/checkpoint.rb'
 require_relative './src/presentation/debug_checkpoint.rb'
 
 require_relative './src/input/drive_car.rb'
