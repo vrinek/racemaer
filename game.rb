@@ -33,14 +33,20 @@ class GameWindow < Gosu::Window
 
   DAMPING = 0.3
 
+  COMMANDS_FILENAME = File.expand_path('../commands.rbm', __FILE__)
+
   attr_reader :current_map
 
   def initialize
+    @debug = false # true / false
+    @mode = nil # nil / :record / :replay
+
     super(WIDTH, HEIGHT)
     self.caption = 'Gosu Tutorial Game'
 
+    initialize_commands_buffer
+
     @debug_dialog = DebugDialog.new(window: self)
-    @debug = false
 
     @space = CP::Space.new
 
@@ -48,6 +54,8 @@ class GameWindow < Gosu::Window
     @commanders = InterfacedArray.new(interface: Commander)
     @presentations = InterfacedArray.new(interface: Presentation)
     @debug_presentations = InterfacedArray.new(interface: Presentation)
+
+    @actors = {}
 
     load_map!
     load_track!
@@ -58,14 +66,28 @@ class GameWindow < Gosu::Window
   end
 
   def update
-    @debug_dialog.update
-    commands = @commanders.map(&:commands).flatten
+    if Gosu.button_down? Gosu::KbQ
+      # shut down
+      store_commands_buffer(@commands_buffer) if @mode == :record
+      exit 0
+    else
+      # keep running
+      @debug_dialog.update
 
-    @objects.each do |obj|
-      obj.update(commands: commands)
+      commands.each { |cmd| @actors[cmd[:actor_id]].act(command: cmd) }
+
+      @objects.each(&:update)
+      @space.step(update_interval / 1000)
     end
+  end
 
-    @space.step(update_interval / 1000)
+  def initialize_commands_buffer
+    case @mode
+    when :replay
+      @commands_buffer = load_commands_buffer
+    else
+      @commands_buffer = []
+    end
   end
 
   def draw
@@ -104,6 +126,7 @@ class GameWindow < Gosu::Window
     @presentations << PresentCar.new(model: car)
     @commanders << DriveCar.new(actor: car)
     @debug_presentations << DebugCar.new(model: car)
+    @actors[car.actor_id] = car
   end
 
   def load_loose_tires!
@@ -126,6 +149,33 @@ class GameWindow < Gosu::Window
   def draw_debug_overlay
     color = Gosu::Color.rgba(0, 0, 0, 128)
     Gosu.draw_rect(0, 0, WIDTH, HEIGHT, color, 10)
+  end
+
+  private
+
+  def commands
+    case @mode
+    when :record
+      cmds = @commanders.map(&:commands).flatten
+      @commands_buffer << cmds
+      cmds
+    when :replay
+      @commands = @commands_buffer.shift || []
+    else
+      @commanders.map(&:commands).flatten
+    end
+  end
+
+  def store_commands_buffer(buffer)
+    File.open(COMMANDS_FILENAME, 'w') do |file|
+      Marshal.dump(buffer, file)
+    end
+  end
+
+  def load_commands_buffer
+    File.open(COMMANDS_FILENAME, 'r') do |file|
+      Marshal.load(file)
+    end
   end
 end
 

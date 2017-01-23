@@ -16,21 +16,31 @@ class Car
 
   attr_reader :rigid_body, :collision_shape
   attr_reader :angular_velocity
+  attr_reader :actor_id
 
   def initialize(x:, y:, space:)
+    @actor_id = :car_1
+
     initialize_rigid_body(x, y)
     initialize_collision_shape
 
     @angular_velocity = 0
+    @actions_buffer = []
 
     space.add_body(rigid_body)
     space.add_shape(collision_shape)
   end
 
-  def update(commands:)
+  def act(command:)
+    @actions_buffer << command[:action]
+  end
+
+  def update
     rigid_body.reset_forces
 
-    follow(commands.select { |cmd| cmd[:actor] == self })
+    follow(@actions_buffer)
+    @actions_buffer = []
+
     apply_physics
   end
 
@@ -44,10 +54,8 @@ class Car
 
   private
 
-  def follow(commands)
+  def follow(actions)
     dt = 1 / 60.0 # TEMP: approximation
-
-    actions = commands.map { |cmd| cmd[:action] }
 
     turn_left(dt)  if actions.include?(:turn_left)
     turn_right(dt) if actions.include?(:turn_right)

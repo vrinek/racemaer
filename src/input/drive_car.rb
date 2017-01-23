@@ -1,7 +1,7 @@
 # Input commands for driving a car
 class DriveCar
   def initialize(actor:)
-    @actor = actor
+    @actor_id = actor.actor_id
   end
 
   def commands
@@ -16,18 +16,18 @@ class DriveCar
   private
 
   def turn_left
-    { action: :turn_left, actor: @actor }
+    { action: :turn_left, actor_id: @actor_id }
   end
 
   def turn_right
-    { action: :turn_right, actor: @actor }
+    { action: :turn_right, actor_id: @actor_id }
   end
 
   def accelerate
-    { action: :accelerate, actor: @actor }
+    { action: :accelerate, actor_id: @actor_id }
   end
 
   def brake
-    { action: :brake, actor: @actor }
+    { action: :brake, actor_id: @actor_id }
   end
 end

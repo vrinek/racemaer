@@ -19,7 +19,7 @@ class Track
     space.add_collision_func(:checkpoint, :car, &checkpoint_collision_func)
   end
 
-  def update(commands:)
+  def update
     # noop
   end
 

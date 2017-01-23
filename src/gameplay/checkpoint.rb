@@ -26,7 +26,7 @@ class Checkpoint
     trigger_shape.object = { is_flag: false }
   end
 
-  def update(commands:)
+  def update
     # noop
   end
 end
