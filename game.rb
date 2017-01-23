@@ -4,6 +4,7 @@ require 'gosu'
 require 'chipmunk'
 
 require_relative './src/input.rb'
+require_relative './src/presentation.rb'
 
 require_relative './src/interfaced_array.rb'
 require_relative './src/interface/game_object.rb'
@@ -12,18 +13,15 @@ require_relative './src/interface/presentation.rb'
 require_relative './src/debug_dialog.rb'
 
 require_relative './src/gameplay/track.rb'
-require_relative './src/presentation/present_track.rb'
 require_relative './src/presentation/debug_track.rb'
 
 require_relative './src/gameplay/checkpoint.rb'
 require_relative './src/presentation/debug_checkpoint.rb'
 
 require_relative './src/gameplay/car.rb'
-require_relative './src/presentation/present_car.rb'
 require_relative './src/presentation/debug_car.rb'
 
 require_relative './src/gameplay/loose_tire.rb'
-require_relative './src/presentation/present_loose_tire.rb'
 require_relative './src/presentation/debug_loose_tire.rb'
 
 # Main game window
@@ -49,7 +47,6 @@ class GameWindow < Gosu::Window
     @space.damping = DAMPING
 
     @objects = InterfacedArray.new(interface: GameObject)
-    @presentations = InterfacedArray.new(interface: Presentation)
     @debug_presentations = InterfacedArray.new(interface: Presentation)
 
     @actors = {}
@@ -61,6 +58,7 @@ class GameWindow < Gosu::Window
     load_loose_tires!
 
     @input = Input.new(actors: @actors)
+    @presentation = Presentation.new(models: @objects)
   end
 
   def update
@@ -81,7 +79,7 @@ class GameWindow < Gosu::Window
 
   def draw
     @debug_dialog.draw
-    @presentations.each(&:draw)
+    @presentation.draw
     return unless @debug
     @debug_presentations.each(&:draw)
     draw_debug_overlay
@@ -90,7 +88,6 @@ class GameWindow < Gosu::Window
   def load_track!
     track = Track.new(map: current_map, space: @space)
     @objects << track
-    @presentations << PresentTrack.new(model: track)
     @debug_presentations << DebugTrack.new(model: track)
     @pole_position = track.pole_position
   end
@@ -112,7 +109,6 @@ class GameWindow < Gosu::Window
     x, y = *@pole_position
     car = Car.new(x: x, y: y, space: @space)
     @objects << car
-    @presentations << PresentCar.new(model: car)
     @debug_presentations << DebugCar.new(model: car)
     @actors[car.actor_id] = car
   end
@@ -126,7 +122,6 @@ class GameWindow < Gosu::Window
   def initialize_tire(x, y)
     tire = LooseTire.new(x: x, y: y, space: @space)
     @objects << tire
-    @presentations << PresentLooseTire.new(model: tire)
     @debug_presentations << DebugLooseTire.new(model: tire)
   end
 
