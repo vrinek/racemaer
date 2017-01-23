@@ -3,10 +3,11 @@ require 'json'
 require 'gosu'
 require 'chipmunk'
 
+require_relative './src/input.rb'
+
 require_relative './src/interfaced_array.rb'
 require_relative './src/interface/game_object.rb'
 require_relative './src/interface/presentation.rb'
-require_relative './src/interface/commander.rb'
 
 require_relative './src/debug_dialog.rb'
 
@@ -17,7 +18,6 @@ require_relative './src/presentation/debug_track.rb'
 require_relative './src/gameplay/checkpoint.rb'
 require_relative './src/presentation/debug_checkpoint.rb'
 
-require_relative './src/input/drive_car.rb'
 require_relative './src/gameplay/car.rb'
 require_relative './src/presentation/present_car.rb'
 require_relative './src/presentation/debug_car.rb'
@@ -39,19 +39,16 @@ class GameWindow < Gosu::Window
 
   def initialize
     @debug = false # true / false
-    @mode = nil # nil / :record / :replay
 
     super(WIDTH, HEIGHT)
     self.caption = 'Gosu Tutorial Game'
 
-    initialize_commands_buffer
-
     @debug_dialog = DebugDialog.new(window: self)
 
     @space = CP::Space.new
+    @space.damping = DAMPING
 
     @objects = InterfacedArray.new(interface: GameObject)
-    @commanders = InterfacedArray.new(interface: Commander)
     @presentations = InterfacedArray.new(interface: Presentation)
     @debug_presentations = InterfacedArray.new(interface: Presentation)
 
@@ -62,13 +59,14 @@ class GameWindow < Gosu::Window
     load_checkpoints!
     load_car!
     load_loose_tires!
-    @space.damping = DAMPING
+
+    @input = Input.new(actors: @actors)
   end
 
   def update
     if Gosu.button_down? Gosu::KbQ
       # shut down
-      store_commands_buffer(@commands_buffer) if @mode == :record
+      @input.destroy
       exit 0
     else
       # keep running
@@ -78,15 +76,6 @@ class GameWindow < Gosu::Window
 
       @objects.each(&:update)
       @space.step(update_interval / 1000)
-    end
-  end
-
-  def initialize_commands_buffer
-    case @mode
-    when :replay
-      @commands_buffer = load_commands_buffer
-    else
-      @commands_buffer = []
     end
   end
 
@@ -124,7 +113,6 @@ class GameWindow < Gosu::Window
     car = Car.new(x: x, y: y, space: @space)
     @objects << car
     @presentations << PresentCar.new(model: car)
-    @commanders << DriveCar.new(actor: car)
     @debug_presentations << DebugCar.new(model: car)
     @actors[car.actor_id] = car
   end
@@ -154,28 +142,7 @@ class GameWindow < Gosu::Window
   private
 
   def commands
-    case @mode
-    when :record
-      cmds = @commanders.map(&:commands).flatten
-      @commands_buffer << cmds
-      cmds
-    when :replay
-      @commands = @commands_buffer.shift || []
-    else
-      @commanders.map(&:commands).flatten
-    end
-  end
-
-  def store_commands_buffer(buffer)
-    File.open(COMMANDS_FILENAME, 'w') do |file|
-      Marshal.dump(buffer, file)
-    end
-  end
-
-  def load_commands_buffer
-    File.open(COMMANDS_FILENAME, 'r') do |file|
-      Marshal.load(file)
-    end
+    @input.commands
   end
 end
 

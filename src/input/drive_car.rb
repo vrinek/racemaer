@@ -1,7 +1,7 @@
 # Input commands for driving a car
 class DriveCar
-  def initialize(actor:)
-    @actor_id = actor.actor_id
+  def initialize(actor_id:)
+    @actor_id = actor_id
   end
 
   def commands
