@@ -15,7 +15,10 @@ class DebugPresentation
     'Track' => DebugTrack
   }
 
-  def initialize(models:)
+  def initialize(models:, window_width:, window_height:)
+    @window_width = window_width
+    @window_height = window_height
+
     @presentations = InterfacedArray.new(interface: Presentation)
     models.each do |model|
       presenter_class = PRESENTERS[model.class.to_s]
@@ -26,5 +29,8 @@ class DebugPresentation
 
   def draw
     @presentations.each(&:draw)
+
+    color = Gosu::Color.rgba(0, 0, 0, 128)
+    Gosu.draw_rect(0, 0, @window_width, @window_height, color, 10)
   end
 end

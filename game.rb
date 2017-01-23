@@ -51,7 +51,9 @@ class GameWindow < Gosu::Window
 
     @input = Input.new(actors: @actors)
     @presentation = Presentation.new(models: @objects)
-    @debug_presentation = DebugPresentation.new(models: @objects)
+    @debug_presentation = DebugPresentation.new(
+      models: @objects, window_width: WIDTH, window_height: HEIGHT
+    )
   end
 
   def update
@@ -73,9 +75,7 @@ class GameWindow < Gosu::Window
   def draw
     @debug_dialog.draw
     @presentation.draw
-    return unless @debug
-    @debug_presentation.draw
-    draw_debug_overlay
+    @debug_presentation.draw if @debug
   end
 
   def load_track!
@@ -115,11 +115,6 @@ class GameWindow < Gosu::Window
 
   def enable_debug!
     @debug = true
-  end
-
-  def draw_debug_overlay
-    color = Gosu::Color.rgba(0, 0, 0, 128)
-    Gosu.draw_rect(0, 0, WIDTH, HEIGHT, color, 10)
   end
 
   private
