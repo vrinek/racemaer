@@ -1,16 +1,18 @@
 require_relative './interfaced_array.rb'
 require_relative './interface/presentation.rb'
 
-require_relative './presentation/present_track.rb'
-require_relative './presentation/present_car.rb'
-require_relative './presentation/present_loose_tire.rb'
+require_relative './presentation/debug_car.rb'
+require_relative './presentation/debug_checkpoint.rb'
+require_relative './presentation/debug_loose_tire.rb'
+require_relative './presentation/debug_track.rb'
 
-# Presentation component for playing
-class Presentation
+# Presentation component for debugging
+class DebugPresentation
   PRESENTERS = {
-    'Car' => PresentCar,
-    'LooseTire' => PresentLooseTire,
-    'Track' => PresentTrack
+    'Car' => DebugCar,
+    'Checkpoint' => DebugCheckpoint,
+    'LooseTire' => DebugLooseTire,
+    'Track' => DebugTrack
   }
 
   def initialize(models:)
