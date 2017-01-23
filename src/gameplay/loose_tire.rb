@@ -19,10 +19,6 @@ class LooseTire
     # nothing yet
   end
 
-  def draw(debug: false)
-    # noop
-  end
-
   def presentation_view
     {
       x: rigid_body.pos.x,

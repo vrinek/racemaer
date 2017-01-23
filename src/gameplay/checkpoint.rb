@@ -29,8 +29,4 @@ class Checkpoint
   def update(commands:)
     # noop
   end
-
-  def draw(debug: false)
-    # noop
-  end
 end

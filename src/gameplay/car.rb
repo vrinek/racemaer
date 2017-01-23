@@ -34,10 +34,6 @@ class Car
     apply_physics
   end
 
-  def draw(debug: false)
-    # noop
-  end
-
   def presentation_view
     {
       x: rigid_body.pos.x,

@@ -39,7 +39,7 @@ class GameWindow < Gosu::Window
     super(WIDTH, HEIGHT)
     self.caption = 'Gosu Tutorial Game'
 
-    debug_dialog = DebugDialog.new(window: self)
+    @debug_dialog = DebugDialog.new(window: self)
     @debug = false
 
     @space = CP::Space.new
@@ -48,8 +48,6 @@ class GameWindow < Gosu::Window
     @commanders = InterfacedArray.new(interface: Commander)
     @presentations = InterfacedArray.new(interface: Presentation)
     @debug_presentations = InterfacedArray.new(interface: Presentation)
-
-    @objects << debug_dialog
 
     load_map!
     load_track!
@@ -60,6 +58,7 @@ class GameWindow < Gosu::Window
   end
 
   def update
+    @debug_dialog.update
     commands = @commanders.map(&:commands).flatten
 
     @objects.each do |obj|
@@ -70,7 +69,7 @@ class GameWindow < Gosu::Window
   end
 
   def draw
-    @objects.each { |o| o.draw(debug: @debug) }
+    @debug_dialog.draw
     @presentations.each(&:draw)
     return unless @debug
     @debug_presentations.each(&:draw)

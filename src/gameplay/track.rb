@@ -23,10 +23,6 @@ class Track
     # noop
   end
 
-  def draw(debug: false)
-    # handled by PresentTrack
-  end
-
   def pole_position
     map['pole_position'].map { |n| n * map['tilesize'] + map['tilesize'] / 2 }
   end

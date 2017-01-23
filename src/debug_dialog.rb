@@ -9,7 +9,7 @@ class DebugDialog
     @window = window
   end
 
-  def update(commands:)
+  def update
     if !@window.text_input && Gosu.button_down?(Gosu::KbBacktick)
       @window.text_input = Gosu::TextInput.new
     elsif @window.text_input && Gosu.button_down?(Gosu::KbReturn)
@@ -18,7 +18,7 @@ class DebugDialog
     end
   end
 
-  def draw(debug: false)
+  def draw
     return unless @window.text_input
 
     Gosu::Image.from_text(@window.text_input.text, FONT_SIZE)
