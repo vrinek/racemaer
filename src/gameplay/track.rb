@@ -1,19 +1,17 @@
-require_relative './debug_collision_shape.rb'
-require_relative './debug_track_tile.rb'
-require_relative './tilesets.rb'
+require_relative '../debug_collision_shape.rb'
+require_relative '../debug_track_tile.rb'
+require_relative '../tilesets.rb'
 
 # Race track to drive on
 class Track
-  Z_ORDERS = 0...5
-
   attr_reader :static_body
   attr_reader :collision_shapes
   attr_reader :lap
+  attr_reader :map
 
   def initialize(map:, space:)
     @lap = 0
     @map = map
-    initialize_tiles
     initialize_static_body
     initialize_collision_shapes
     collision_shapes.each { |shape| space.add_shape(shape) }
@@ -26,23 +24,11 @@ class Track
   end
 
   def draw(debug: false)
-    @map['layers'].reverse_each do |layer|
-      z = Z_ORDERS.to_a[layer['z_order']]
-      each_tile_of_layer(layer) do |tile_index, x, y|
-        sprite = @tiles[layer['tileset']][tile_index]
-        sprite.draw(x * @map['tilesize'], y * @map['tilesize'], z)
-      end
-    end
-
-    return unless debug
-    collision_shapes.each { |shape| DebugCollisionShape.new(shape).draw }
-    each_tile_of_layer(@map['layers'][0]) do |tile_index, x, y|
-      DebugTrackTile.new(x, y, tile_index).draw
-    end
+    # handled by PresentTrack
   end
 
   def pole_position
-    @map['pole_position'].map { |n| n * @map['tilesize'] + @map['tilesize'] / 2 }
+    map['pole_position'].map { |n| n * map['tilesize'] + map['tilesize'] / 2 }
   end
 
   private
@@ -51,29 +37,9 @@ class Track
     @static_body = CP::StaticBody.new
   end
 
-  def initialize_tiles
-    @tiles = {}
-
-    @map['layers'].each do |layer|
-      load_tileset(layer['tileset'])
-    end
-  end
-
-  def load_tileset(tileset_name)
-    return if @tiles[tileset_name]
-
-    tileset = TILESETS[tileset_name]
-
-    @tiles[tileset_name] = Array.new(tileset[:tiles] + 1)
-    tileset[:tiles].times do |i|
-      filename = format(tileset[:files], i + 1)
-      @tiles[tileset_name][i + 1] = Gosu::Image.new(filename, retro: true)
-    end
-  end
-
   def initialize_collision_shapes
     @collision_shapes = []
-    @map['layers'].each do |layer|
+    map['layers'].each do |layer|
       tileset = TILESETS[layer['tileset']]
       next unless tileset[:collision_shapes]
 
@@ -81,7 +47,7 @@ class Track
         shapes = tileset[:collision_shapes][tile_index]
         next unless shapes
 
-        offset = CP::Vec2.new(x * @map['tilesize'], y * @map['tilesize'])
+        offset = CP::Vec2.new(x * map['tilesize'], y * map['tilesize'])
         shapes.each do |vertice_data|
           verts = vertice_data.map { |(vx, vy)| CP::Vec2.new(vx, vy) }.reverse
           @collision_shapes << CP::Shape::Poly.new(static_body, verts, offset)

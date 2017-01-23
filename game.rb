@@ -10,7 +10,9 @@ require_relative './src/interface/commander.rb'
 
 require_relative './src/debug_dialog.rb'
 
-require_relative './src/track.rb'
+require_relative './src/gameplay/track.rb'
+require_relative './src/presentation/present_track.rb'
+require_relative './src/presentation/debug_track.rb'
 
 require_relative './src/gameplay/checkpoint.rb'
 require_relative './src/presentation/debug_checkpoint.rb'
@@ -78,6 +80,8 @@ class GameWindow < Gosu::Window
   def load_track!
     track = Track.new(map: current_map, space: @space)
     @objects << track
+    @presentations << PresentTrack.new(model: track)
+    @debug_presentations << DebugTrack.new(model: track)
     @pole_position = track.pole_position
   end
 
