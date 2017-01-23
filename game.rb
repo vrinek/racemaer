@@ -4,29 +4,16 @@ require 'gosu'
 require 'chipmunk'
 
 require_relative './src/input.rb'
+require_relative './src/gameplay.rb'
 require_relative './src/presentation.rb'
 require_relative './src/debug_presentation.rb'
 
-require_relative './src/interfaced_array.rb'
-require_relative './src/interface/game_object.rb'
-
 require_relative './src/debug_dialog.rb'
-
-require_relative './src/gameplay/track.rb'
-require_relative './src/gameplay/checkpoint.rb'
-require_relative './src/gameplay/car.rb'
-require_relative './src/gameplay/loose_tire.rb'
 
 # Main game window
 class GameWindow < Gosu::Window
   WIDTH = 1280
   HEIGHT = 768
-
-  DAMPING = 0.3
-
-  COMMANDS_FILENAME = File.expand_path('../commands.rbm', __FILE__)
-
-  attr_reader :current_map
 
   def initialize
     @debug = false # true / false
@@ -36,23 +23,13 @@ class GameWindow < Gosu::Window
 
     @debug_dialog = DebugDialog.new(window: self)
 
-    @space = CP::Space.new
-    @space.damping = DAMPING
+    @gameplay = Gameplay.new(window_width: WIDTH, window_height: HEIGHT)
 
-    @objects = InterfacedArray.new(interface: GameObject)
+    @input = Input.new(actors: @gameplay.actors, mode: :replay)
 
-    @actors = {}
-
-    load_map!
-    load_track!
-    load_checkpoints!
-    load_car!
-    load_loose_tires!
-
-    @input = Input.new(actors: @actors)
-    @presentation = Presentation.new(models: @objects)
+    @presentation = Presentation.new(models: @gameplay.objects)
     @debug_presentation = DebugPresentation.new(
-      models: @objects, window_width: WIDTH, window_height: HEIGHT
+      models: @gameplay.objects, window_width: WIDTH, window_height: HEIGHT
     )
   end
 
@@ -65,10 +42,8 @@ class GameWindow < Gosu::Window
       # keep running
       @debug_dialog.update
 
-      commands.each { |cmd| @actors[cmd[:actor_id]].act(command: cmd) }
-
-      @objects.each(&:update)
-      @space.step(update_interval / 1000)
+      commands = @input.commands
+      @gameplay.update(commands: commands, update_interval: update_interval)
     end
   end
 
@@ -78,49 +53,8 @@ class GameWindow < Gosu::Window
     @debug_presentation.draw if @debug
   end
 
-  def load_track!
-    track = Track.new(map: current_map, space: @space)
-    @objects << track
-    @pole_position = track.pole_position
-  end
-
-  def load_map!
-    @current_map = File.open('maps/test_track_1.json') do |file|
-      JSON.load(file)
-    end
-  end
-
-  def load_checkpoints!
-    Checkpoint.new_with(map: current_map, space: @space).each do |checkpoint|
-      @objects << checkpoint
-    end
-  end
-
-  def load_car!
-    x, y = *@pole_position
-    car = Car.new(x: x, y: y, space: @space)
-    @objects << car
-    @actors[car.actor_id] = car
-  end
-
-  def load_loose_tires!
-    initialize_tire(WIDTH / 4, HEIGHT / 4)
-    initialize_tire(WIDTH / 4 + 30, HEIGHT / 4)
-    initialize_tire(WIDTH / 4 + 15, HEIGHT / 4 + 25)
-  end
-
-  def initialize_tire(x, y)
-    @objects << LooseTire.new(x: x, y: y, space: @space)
-  end
-
   def enable_debug!
     @debug = true
-  end
-
-  private
-
-  def commands
-    @input.commands
   end
 end
 
