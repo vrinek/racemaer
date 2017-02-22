@@ -30,9 +30,9 @@ class PresentTrack
 
     tileset = TILESETS[tileset_name]
 
-    @tiles[tileset_name] = Array.new(tileset[:tiles] + 1)
-    tileset[:tiles].times do |i|
-      filename = format(tileset[:files], i + 1)
+    @tiles[tileset_name] = Array.new(tileset['tiles'] + 1)
+    tileset['tiles'].times do |i|
+      filename = format(tileset['files'], i + 1)
       @tiles[tileset_name][i + 1] = Gosu::Image.new(filename, retro: true)
     end
   end

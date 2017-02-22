@@ -48,7 +48,7 @@ class Gameplay
 
   def load_map!
     @current_map = File.open('maps/test_track_1.json') do |file|
-      JSON.load(file)
+      JSON.parse(file.read).freeze
     end
   end
 

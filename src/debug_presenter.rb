@@ -13,7 +13,7 @@ class DebugPresenter
     'Checkpoint' => DebugCheckpoint,
     'LooseTire' => DebugLooseTire,
     'Track' => DebugTrack
-  }
+  }.freeze
 
   def initialize(models:, window_width:, window_height:)
     @window_width = window_width
@@ -29,7 +29,12 @@ class DebugPresenter
 
   def draw
     @presentations.each(&:draw)
+    draw_overlay
+  end
 
+  private
+
+  def draw_overlay
     color = Gosu::Color.rgba(0, 0, 0, 128)
     Gosu.draw_rect(0, 0, @window_width, @window_height, color, 10)
   end

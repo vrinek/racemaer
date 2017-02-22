@@ -1,7 +1,7 @@
 require 'json'
 
-require 'gosu'
 require 'chipmunk'
+require 'gosu'
 
 require_relative './src/input.rb'
 require_relative './src/gameplay.rb'

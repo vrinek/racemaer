@@ -37,10 +37,10 @@ class Track
     @collision_shapes = []
     map['layers'].each do |layer|
       tileset = TILESETS[layer['tileset']]
-      next unless tileset[:collision_shapes]
+      next unless tileset['collision_shapes']
 
       each_tile_of_layer(layer) do |tile_index, x, y|
-        shapes = tileset[:collision_shapes][tile_index]
+        shapes = tileset['collision_shapes'][tile_index.to_s]
         next unless shapes
 
         offset = CP::Vec2.new(x * map['tilesize'], y * map['tilesize'])

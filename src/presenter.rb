@@ -11,7 +11,7 @@ class HumanPresenter
     'Car' => PresentCar,
     'LooseTire' => PresentLooseTire,
     'Track' => PresentTrack
-  }
+  }.freeze
 
   def initialize(models:)
     @presentations = InterfacedArray.new(interface: Presenter)

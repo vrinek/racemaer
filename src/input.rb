@@ -8,7 +8,7 @@ class Input
 
   COMMANDERS = {
     'Car' => DriveCar
-  }
+  }.freeze
 
   def initialize(actors:, mode: nil)
     @mode = mode
@@ -42,12 +42,12 @@ class Input
   private
 
   def initialize_commands_buffer
-    case @mode
-    when :replay
-      @commands_buffer = load_commands_buffer
-    else
-      @commands_buffer = []
-    end
+    @commands_buffer = case @mode
+                       when :replay
+                         load_commands_buffer
+                       else
+                         []
+                       end
   end
 
   def store_commands_buffer(buffer)

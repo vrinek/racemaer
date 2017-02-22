@@ -22,7 +22,7 @@ class DebugDialog
     return unless @window.text_input
 
     Gosu::Image.from_text(@window.text_input.text, FONT_SIZE)
-      .draw(X, Y, Z_ORDER)
+               .draw(X, Y, Z_ORDER)
   end
 
   private
