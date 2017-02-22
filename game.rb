@@ -23,7 +23,7 @@ class GameWindow < Gosu::Window
 
     @debug_dialog = DebugDialog.new(window: self)
 
-    @gameplay = Gameplay.new(window_width: WIDTH, window_height: HEIGHT)
+    @gameplay = Gameplay.new(world_width: WIDTH, world_height: HEIGHT)
 
     @input = Input.new(actors: @gameplay.actors)
 

@@ -14,9 +14,9 @@ class Gameplay
   attr_reader :objects
   attr_reader :current_map
 
-  def initialize(window_width:, window_height:)
-    @window_width = window_width
-    @window_height = window_height
+  def initialize(world_width:, world_height:)
+    @world_width = world_width
+    @world_height = world_height
 
     @space = CP::Space.new
     @space.damping = DAMPING
@@ -66,9 +66,9 @@ class Gameplay
   end
 
   def load_loose_tires!
-    initialize_tire(@window_width / 4, @window_height / 4)
-    initialize_tire(@window_width / 4 + 30, @window_height / 4)
-    initialize_tire(@window_width / 4 + 15, @window_height / 4 + 25)
+    initialize_tire(@world_width / 4, @world_height / 4)
+    initialize_tire(@world_width / 4 + 30, @world_height / 4)
+    initialize_tire(@world_width / 4 + 15, @world_height / 4 + 25)
   end
 
   def initialize_tire(x, y)
