@@ -1,3 +1,5 @@
+require_relative './debug_track_tile.rb'
+
 # 2D debug representation of a track
 class DebugTrack
   def initialize(model:)

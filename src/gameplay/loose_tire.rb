@@ -1,4 +1,4 @@
-# Loose tire. Mostly used for debugging purposes.
+# A loose tire on the track
 class LooseTire
   RADIUS = 14
 

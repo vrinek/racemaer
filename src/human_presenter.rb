@@ -1,9 +1,9 @@
 require_relative './interfaced_array.rb'
 require_relative './interface/presenter.rb'
 
-require_relative './presentation/present_track.rb'
-require_relative './presentation/present_car.rb'
-require_relative './presentation/present_loose_tire.rb'
+require_relative './human_presenter/present_track.rb'
+require_relative './human_presenter/present_car.rb'
+require_relative './human_presenter/present_loose_tire.rb'
 
 # Presenter component for a human to play the game
 class HumanPresenter

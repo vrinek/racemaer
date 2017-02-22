@@ -1,10 +1,10 @@
 require_relative './interfaced_array.rb'
 require_relative './interface/presenter.rb'
 
-require_relative './presentation/debug_car.rb'
-require_relative './presentation/debug_checkpoint.rb'
-require_relative './presentation/debug_loose_tire.rb'
-require_relative './presentation/debug_track.rb'
+require_relative './debug_presenter/debug_car.rb'
+require_relative './debug_presenter/debug_checkpoint.rb'
+require_relative './debug_presenter/debug_loose_tire.rb'
+require_relative './debug_presenter/debug_track.rb'
 
 # Presenter component for debugging
 class DebugPresenter

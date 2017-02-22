@@ -1,4 +1,4 @@
-require_relative '../debug_collision_shape.rb'
+require_relative './debug_collision_shape.rb'
 
 # Draws a debug view of a loose tire on the track
 class DebugLooseTire

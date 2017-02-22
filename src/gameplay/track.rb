@@ -1,5 +1,3 @@
-require_relative '../debug_collision_shape.rb'
-require_relative '../debug_track_tile.rb'
 require_relative '../tilesets.rb'
 
 # Race track to drive on

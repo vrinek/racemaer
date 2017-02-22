@@ -1,4 +1,4 @@
-require_relative '../debug_collision_shape.rb'
+require_relative './debug_collision_shape.rb'
 
 # 2D debug representation of a single checkpoint
 class DebugCheckpoint
