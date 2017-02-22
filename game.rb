@@ -5,7 +5,7 @@ require 'gosu'
 
 require_relative './src/input.rb'
 require_relative './src/gameplay.rb'
-require_relative './src/presenter.rb'
+require_relative './src/human_presenter.rb'
 require_relative './src/debug_presenter.rb'
 
 require_relative './src/debug_dialog.rb'
