@@ -3,7 +3,7 @@ require 'json'
 require 'chipmunk'
 require 'gosu'
 
-require_relative './src/input.rb'
+require_relative './src/human_input.rb'
 require_relative './src/gameplay.rb'
 require_relative './src/human_presenter.rb'
 require_relative './src/debug_presenter.rb'
@@ -25,7 +25,7 @@ class GameWindow < Gosu::Window
 
     @gameplay = Gameplay.new(world_width: WIDTH, world_height: HEIGHT)
 
-    @input = Input.new(actors: @gameplay.actors)
+    @human_input = HumanInput.new(actors: @gameplay.actors)
 
     @human_presenter = HumanPresenter.new(models: @gameplay.objects)
     @debug_presenter = DebugPresenter.new(
@@ -36,13 +36,13 @@ class GameWindow < Gosu::Window
   def update
     if Gosu.button_down? Gosu::KbQ
       # shut down
-      @input.destroy
+      @human_input.destroy
       exit 0
     else
       # keep running
       @debug_dialog.update
 
-      commands = @input.commands
+      commands = @human_input.commands
       @gameplay.update(commands: commands, update_interval: update_interval)
     end
   end

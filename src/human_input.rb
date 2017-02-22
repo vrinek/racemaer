@@ -1,10 +1,10 @@
 require_relative './interfaced_array.rb'
 require_relative './interface/commander.rb'
 
-require_relative './input/drive_car.rb'
+require_relative './human_input/drive_car.rb'
 
 # Handles human input at the top level and delegates to Commanders for affecting the game state.
-class Input
+class HumanInput
   COMMANDS_FILENAME = File.expand_path('../../commands.rbm', __FILE__)
 
   COMMANDERS = {

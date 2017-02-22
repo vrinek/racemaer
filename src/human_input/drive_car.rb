@@ -1,4 +1,4 @@
-# Input commands for driving a car
+# Translates input events to commands for driving a car
 class DriveCar
   def initialize(actor_id:)
     @actor_id = actor_id
