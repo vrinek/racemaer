@@ -1,3 +1,4 @@
+# Draws a single loose tire on the track
 class PresentLooseTire
   Z_ORDER = 5
 

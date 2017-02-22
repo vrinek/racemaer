@@ -4,7 +4,7 @@ class InterfacedArray < Array
     @interface = interface
   end
 
-  def << item
+  def <<(item)
     if @interface && !matches_interface?(item)
       fail "#{item} is missing #{missing_methods(item)} to comply with #{@interface}"
     end
