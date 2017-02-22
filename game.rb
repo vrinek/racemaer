@@ -5,8 +5,8 @@ require 'chipmunk'
 
 require_relative './src/input.rb'
 require_relative './src/gameplay.rb'
-require_relative './src/presentation.rb'
-require_relative './src/debug_presentation.rb'
+require_relative './src/presenter.rb'
+require_relative './src/debug_presenter.rb'
 
 require_relative './src/debug_dialog.rb'
 
@@ -27,8 +27,8 @@ class GameWindow < Gosu::Window
 
     @input = Input.new(actors: @gameplay.actors)
 
-    @presentation = Presentation.new(models: @gameplay.objects)
-    @debug_presentation = DebugPresentation.new(
+    @human_presenter = HumanPresenter.new(models: @gameplay.objects)
+    @debug_presenter = DebugPresenter.new(
       models: @gameplay.objects, window_width: WIDTH, window_height: HEIGHT
     )
   end
@@ -49,8 +49,8 @@ class GameWindow < Gosu::Window
 
   def draw
     @debug_dialog.draw
-    @presentation.draw
-    @debug_presentation.draw if @debug
+    @human_presenter.draw
+    @debug_presenter.draw if @debug
   end
 
   def enable_debug!

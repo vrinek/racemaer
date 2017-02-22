@@ -1,13 +1,13 @@
 require_relative './interfaced_array.rb'
-require_relative './interface/presentation.rb'
+require_relative './interface/presenter.rb'
 
 require_relative './presentation/debug_car.rb'
 require_relative './presentation/debug_checkpoint.rb'
 require_relative './presentation/debug_loose_tire.rb'
 require_relative './presentation/debug_track.rb'
 
-# Presentation component for debugging
-class DebugPresentation
+# Presenter component for debugging
+class DebugPresenter
   PRESENTERS = {
     'Car' => DebugCar,
     'Checkpoint' => DebugCheckpoint,
@@ -19,7 +19,7 @@ class DebugPresentation
     @window_width = window_width
     @window_height = window_height
 
-    @presentations = InterfacedArray.new(interface: Presentation)
+    @presentations = InterfacedArray.new(interface: Presenter)
     models.each do |model|
       presenter_class = PRESENTERS[model.class.to_s]
       next unless presenter_class
