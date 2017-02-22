@@ -25,7 +25,7 @@ class GameWindow < Gosu::Window
 
     @gameplay = Gameplay.new(window_width: WIDTH, window_height: HEIGHT)
 
-    @input = Input.new(actors: @gameplay.actors, mode: :replay)
+    @input = Input.new(actors: @gameplay.actors)
 
     @presentation = Presentation.new(models: @gameplay.objects)
     @debug_presentation = DebugPresentation.new(
