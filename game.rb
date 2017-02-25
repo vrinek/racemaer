@@ -7,6 +7,7 @@ require_relative './src/human_input.rb'
 require_relative './src/gameplay.rb'
 require_relative './src/human_presenter.rb'
 require_relative './src/debug_presenter.rb'
+require_relative './src/sensor_presenter.rb'
 
 require_relative './src/debug_dialog.rb'
 
@@ -31,6 +32,8 @@ class GameWindow < Gosu::Window
     @debug_presenter = DebugPresenter.new(
       models: @gameplay.objects, window_width: WIDTH, window_height: HEIGHT
     )
+
+    @sensor_presenter = SensorPresenter.new(models: @gameplay.objects, space: @gameplay.space)
   end
 
   def update
@@ -51,6 +54,7 @@ class GameWindow < Gosu::Window
     @debug_dialog.draw
     @human_presenter.draw
     @debug_presenter.draw if @debug
+    @sensor_presenter.draw
   end
 
   def enable_debug!

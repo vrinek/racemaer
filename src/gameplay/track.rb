@@ -44,7 +44,9 @@ class Track
         offset = CP::Vec2.new(x * map['tilesize'], y * map['tilesize'])
         shapes.each do |vertice_data|
           verts = vertice_data.map { |(vx, vy)| CP::Vec2.new(vx, vy) }.reverse
-          @collision_shapes << CP::Shape::Poly.new(static_body, verts, offset)
+          shape = CP::Shape::Poly.new(static_body, verts, offset)
+          shape.collision_type = :track_barrier
+          @collision_shapes << shape
         end
       end
     end

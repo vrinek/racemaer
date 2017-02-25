@@ -13,6 +13,7 @@ class Gameplay
   attr_reader :actors
   attr_reader :objects
   attr_reader :current_map
+  attr_reader :space
 
   def initialize(world_width:, world_height:)
     @world_width = world_width
