@@ -23,22 +23,12 @@ class GameWindow < Gosu::Window
     @mode = nil # :record / :replay / nil
 
     super(WIDTH, HEIGHT)
-    self.caption = 'Gosu Tutorial Game'
+    self.caption = 'Racer Maker'
 
     @debug_dialog = DebugDialog.new(window: self)
 
     @gameplay = Gameplay.new(world_width: WIDTH, world_height: HEIGHT)
-
-    human_input = HumanInput.new(actors: @gameplay.actors)
-
-    @input = case @mode
-             when :record
-               InputRecorder.new(delegate: human_input)
-             when :replay
-               InputReplayer.new(delegate: human_input)
-             else
-               human_input
-             end
+    @input = initialize_input(@gameplay.actors, @mode)
 
     @human_presenter = HumanPresenter.new(models: @gameplay.objects)
     @debug_presenter = DebugPresenter.new(
@@ -52,6 +42,7 @@ class GameWindow < Gosu::Window
     if Gosu.button_down? Gosu::KbQ
       # shut down
       @input.destroy
+      @sensor_presenter.destroy
       exit 0
     else
       # keep running
@@ -71,6 +62,21 @@ class GameWindow < Gosu::Window
 
   def enable_debug!
     @debug = true
+  end
+
+  private
+
+  def initialize_input(actors, mode)
+    human_input = HumanInput.new(actors: actors)
+
+    case mode
+    when :record
+      InputRecorder.new(delegate: human_input)
+    when :replay
+      InputReplayer.new(delegate: human_input)
+    else
+      human_input
+    end
   end
 end
 

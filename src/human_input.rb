@@ -19,9 +19,7 @@ class HumanInput
     end
   end
 
-  def destroy
-    # Nothing
-  end
+  def destroy; end
 
   def commands
     @commanders.map(&:commands).flatten

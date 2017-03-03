@@ -9,17 +9,32 @@ class SensorPresenter
     'Car' => CarSensors
   }.freeze
 
+  LOG_FILENAME = File.expand_path('../../sensors.rbm', __FILE__)
+
+  attr_reader :log
+
   def initialize(models:, space:)
-    @presentations = InterfacedArray.new(interface: Presenter)
+    @presenters = InterfacedArray.new(interface: Presenter)
     models.each do |model|
       presenter_class = PRESENTERS[model.class.to_s]
       next unless presenter_class
-      @presentations << presenter_class.new(model: model, space: space)
+      @presenters << presenter_class.new(model: model, space: space)
     end
+
+    @log = []
+  end
+
+  def debug_draw
+    @presenters.each(&:debug_draw)
   end
 
   def draw
-    @presentations.each(&:draw)
-    # p @presentations.map(&:sensors)
+    @log << @presenters.map(&:draw)
+  end
+
+  def destroy
+    File.open(LOG_FILENAME, 'w') do |file|
+      Marshal.dump(@log, file)
+    end
   end
 end

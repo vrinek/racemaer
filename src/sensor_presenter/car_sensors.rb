@@ -37,11 +37,11 @@ class CarSensors
     space.add_collision_handler(:car_sensor, :track_barrier, SensorHandler.new(contacts: @contacts))
   end
 
-  def draw
+  def debug_draw
     @debug_sensor_shapes.each(&:draw)
   end
 
-  def sensors
+  def draw
     @contacts.values.map { |b| b ? '1' : '0' }.join
   end
 
