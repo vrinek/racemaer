@@ -48,7 +48,7 @@ You are a racing teacher. You're teaching an AI how to drive and win the champio
 
 ### Part 2: AI teaching game
 
-- [ ] Sensors
+- [x] Sensors
 - [ ] Connect with tensorflow
 - [ ] AI learning
     - [ ] Mimic
