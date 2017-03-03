@@ -11,6 +11,7 @@ require_relative './src/debug_presenter.rb'
 require_relative './src/sensor_presenter.rb'
 require_relative './src/debug_dialog.rb'
 require_relative './src/input_recorder.rb'
+require_relative './src/input_replayer.rb'
 
 # Main game window
 class GameWindow < Gosu::Window
@@ -19,6 +20,7 @@ class GameWindow < Gosu::Window
 
   def initialize
     @debug = false # true / false
+    @mode = nil # :record / :replay / nil
 
     super(WIDTH, HEIGHT)
     self.caption = 'Gosu Tutorial Game'
@@ -28,7 +30,15 @@ class GameWindow < Gosu::Window
     @gameplay = Gameplay.new(world_width: WIDTH, world_height: HEIGHT)
 
     human_input = HumanInput.new(actors: @gameplay.actors)
-    @input = InputRecorder.new(delegate: human_input, mode: :replay)
+
+    @input = case @mode
+             when :record
+               InputRecorder.new(delegate: human_input)
+             when :replay
+               InputReplayer.new(delegate: human_input)
+             else
+               human_input
+             end
 
     @human_presenter = HumanPresenter.new(models: @gameplay.objects)
     @debug_presenter = DebugPresenter.new(
