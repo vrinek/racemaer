@@ -55,3 +55,28 @@ You are a racing teacher. You're teaching an AI how to drive and win the champio
         - [ ] Learn on every lap
         - [ ] Online learning
     - [ ] Pain/happiness learning
+
+## Architectural notes
+
+```
+[keyboard] -> [Input] -> [Gameplay] -> [Presenter] -> [window]
+```
+
+When recording:
+
+```
+[keyboard] -> [HumanInput] -> [InputRecorder] -> [Gameplay] ...
+```
+
+When replaying:
+
+```
+[InputReplayer] -> [Gameplay] ...
+```
+
+AI sensors:
+
+```
+... [Gameplay] -> [HumanPresenter] -> [window]
+               -> [SensorsPresenter] -> [filesystem]
+```

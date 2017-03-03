@@ -33,6 +33,7 @@ class SensorPresenter
   end
 
   def destroy
+    # TODO: move to own class like InputRecorder
     File.open(LOG_FILENAME, 'w') do |file|
       Marshal.dump(@log, file)
     end

@@ -1,9 +1,8 @@
-# Replays input from its delegate to a file
+# Replays input from a file
 class InputReplayer
   COMMANDS_FILENAME = File.expand_path('../../commands.rbm', __FILE__)
 
-  def initialize(delegate:)
-    @delegate = delegate
+  def initialize
     @commands_buffer = load_commands_buffer
   end
 

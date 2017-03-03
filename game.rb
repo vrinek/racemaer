@@ -73,7 +73,7 @@ class GameWindow < Gosu::Window
     when :record
       InputRecorder.new(delegate: human_input)
     when :replay
-      InputReplayer.new(delegate: human_input)
+      InputReplayer.new
     else
       human_input
     end
