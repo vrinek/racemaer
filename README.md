@@ -2,6 +2,16 @@
 
 You are a racing teacher. You're teaching an AI how to drive and win the championship.
 
+## Usage
+
+In `:record` mode:
+
+* start the game
+* play a few laps
+* quit (with `Q`)
+* run `ruby tools/jsonify.rb sensors.rbm commands.rbm`
+* store the two JSON files `sensors.json` & `commands.json` as training data
+
 ## TODO
 
 ### Part 1: racing game
