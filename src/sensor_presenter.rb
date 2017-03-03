@@ -3,6 +3,7 @@ require_relative './interface/presenter.rb'
 
 require_relative './sensor_presenter/car_sensors.rb'
 
+# Presenter component to provide AI with sensors
 class SensorPresenter
   PRESENTERS = {
     'Car' => CarSensors
@@ -19,5 +20,6 @@ class SensorPresenter
 
   def draw
     @presentations.each(&:draw)
+    # p @presentations.map(&:sensors)
   end
 end
