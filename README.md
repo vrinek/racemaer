@@ -4,13 +4,20 @@ You are a racing teacher. You're teaching an AI how to drive and win the champio
 
 ## Usage
 
-In `:record` mode:
+```
+cd game
+bundle exec ruby game.rb record
+# Run a few laps.
+# Press Q to quit.
 
-* start the game
-* play a few laps
-* quit (with `Q`)
-* run `ruby tools/jsonify.rb sensors.rbm commands.rbm`
-* store the two JSON files `sensors.json` & `commands.json` as training data
+fish send_to_train.fish
+cd ../machine-learning
+python train.py
+mv parameters.json ../game/parameters.json
+cd ../game
+
+bundle exec ruby game.rb ai
+```
 
 ## TODO
 
@@ -60,10 +67,14 @@ In `:record` mode:
 
 - [x] Sensors
 - [ ] Connect with tensorflow
+    - [x] Via manual process
+    - [ ] Via automated process
+    - [ ] Via sockets
 - [ ] AI learning
-    - [ ] Mimic
+    - [x] Mimic
+        - [x] Play, train, run
         - [ ] Learn on every lap
-        - [ ] Online learning
+        - [ ] Online learning (learn while running)
     - [ ] Pain/happiness learning
 
 ## Architectural notes

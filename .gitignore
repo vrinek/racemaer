@@ -1,7 +1,7 @@
 commands.rbm
 sensors.rbm
-
-commands.json
-sensors.json
+commands_ml.json
+sensors_ml.json
+parameters.json
 
 .direnv

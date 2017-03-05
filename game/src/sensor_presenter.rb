@@ -13,8 +13,9 @@ class SensorPresenter
 
   attr_reader :log
 
-  def initialize(models:, space:)
+  def initialize(models:, space:, mode:)
     @presenters = InterfacedArray.new(interface: Presenter)
+    @mode = mode
     models.each do |model|
       presenter_class = PRESENTERS[model.class.to_s]
       next unless presenter_class
@@ -29,11 +30,15 @@ class SensorPresenter
   end
 
   def draw
-    @log << @presenters.map(&:draw)
+    readings = @presenters.map(&:draw).flatten
+    @log << readings
+    readings
   end
 
   def destroy
     # TODO: move to own class like InputRecorder
+    return unless @mode == 'record'
+
     File.open(LOG_FILENAME, 'w') do |file|
       Marshal.dump(@log, file)
     end

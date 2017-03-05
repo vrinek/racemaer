@@ -2,10 +2,13 @@ require 'json'
 
 require 'chipmunk'
 require 'gosu'
+require 'ruby-prof'
 
 require_relative './src/gameplay.rb'
 require_relative './src/human_input.rb'
 require_relative './src/human_presenter.rb'
+
+require_relative './src/ai_input.rb'
 
 require_relative './src/debug_presenter.rb'
 require_relative './src/sensor_presenter.rb'
@@ -13,14 +16,18 @@ require_relative './src/debug_dialog.rb'
 require_relative './src/input_recorder.rb'
 require_relative './src/input_replayer.rb'
 
+PROFILING = false
+
 # Main game window
 class GameWindow < Gosu::Window
   WIDTH = 1280
   HEIGHT = 768
 
   def initialize
+    RubyProf.start if PROFILING
+
     @debug = false # true / false
-    @mode = nil # :record / :replay / nil
+    @mode = ARGV[0] # 'record' / 'replay' / 'ai' / nil
 
     super(WIDTH, HEIGHT)
     self.caption = 'Racer Maker'
@@ -28,14 +35,17 @@ class GameWindow < Gosu::Window
     @debug_dialog = DebugDialog.new(window: self)
 
     @gameplay = Gameplay.new(world_width: WIDTH, world_height: HEIGHT)
-    @input = initialize_input(@gameplay.actors, @mode)
 
     @human_presenter = HumanPresenter.new(models: @gameplay.objects)
     @debug_presenter = DebugPresenter.new(
       models: @gameplay.objects, window_width: WIDTH, window_height: HEIGHT
     )
 
-    @sensor_presenter = SensorPresenter.new(models: @gameplay.objects, space: @gameplay.space)
+    @sensor_presenter = SensorPresenter.new(
+      models: @gameplay.objects, space: @gameplay.space, mode: @mode
+    )
+
+    @input = initialize_input(@gameplay.actors, @mode, @sensor_presenter)
   end
 
   def update
@@ -43,6 +53,14 @@ class GameWindow < Gosu::Window
       # shut down
       @input.destroy
       @sensor_presenter.destroy
+
+      if PROFILING
+        result = RubyProf.stop
+
+        printer = RubyProf::FlatPrinter.new(result)
+        printer.print(STDOUT)
+      end
+
       exit 0
     else
       # keep running
@@ -58,6 +76,7 @@ class GameWindow < Gosu::Window
     @human_presenter.draw
     @debug_presenter.draw if @debug
     @sensor_presenter.draw
+    @sensor_presenter.debug_draw if @debug
   end
 
   def enable_debug!
@@ -66,14 +85,16 @@ class GameWindow < Gosu::Window
 
   private
 
-  def initialize_input(actors, mode)
+  def initialize_input(actors, mode, sensor_presenter)
     human_input = HumanInput.new(actors: actors)
 
     case mode
-    when :record
+    when 'record'
       InputRecorder.new(delegate: human_input)
-    when :replay
+    when 'replay'
       InputReplayer.new
+    when 'ai'
+      AiInput.new(actors: actors, sensors: sensor_presenter)
     else
       human_input
     end

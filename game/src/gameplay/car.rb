@@ -118,7 +118,7 @@ class Car
   end
 
   def apply_tires_force(dt)
-    orthogonal_direction = CP::Vec2.for_angle(((angle + 90) % 360).gosu_to_radians)
+    orthogonal_direction = rigid_body.rot.perp
     tires_force = (rigid_body.v / dt).project(orthogonal_direction) * -MASS
     rigid_body.apply_force(tires_force, CP::Vec2::ZERO)
   end
