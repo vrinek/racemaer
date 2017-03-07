@@ -1,15 +1,16 @@
-import json as json
+import csv
+import json
 import tensorflow as tf
 
-with open("sensors_ml.json") as file:
-    sensors = json.loads(file.read())
+with open("sensors.csv") as file:
+    features = list(csv.reader(file))
 
-input_size = len(sensors[0])
+input_size = len(features[0])
 
-with open("commands_ml.json") as file:
-    commands = json.loads(file.read())
+with open("commands.csv") as file:
+    labels = list(csv.reader(file))
 
-output_size = len(commands[0])
+output_size = len(labels[0])
 
 # Define model
 x = tf.placeholder(tf.float32, [None, input_size])
@@ -29,9 +30,9 @@ sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
 for epoch in range(100):
-    print(epoch, sess.run(loss, feed_dict={x: sensors, y_: commands}))
+    print(epoch, sess.run(loss, feed_dict={x: features, y_: labels}))
     for _ in range(100):
-        sess.run(train_step, feed_dict={x: sensors, y_: commands})
+        sess.run(train_step, feed_dict={x: features, y_: labels})
 
 json_data = json.dumps({
     'W': sess.run(W).tolist(),
@@ -41,4 +42,4 @@ json_data = json.dumps({
 with open("parameters.json", 'w') as file:
     file.write(json_data)
 
-print(sess.run(loss, feed_dict={x: sensors, y_: commands}))
+print(sess.run(loss, feed_dict={x: features, y_: labels}))

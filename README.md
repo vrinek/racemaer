@@ -33,7 +33,7 @@ bundle exec ruby game.rb record
 # Run a few laps.
 # Press Q to quit.
 
-fish send_to_train.fish
+cp *.csv ../machine-learning
 cd ../machine-learning
 python train.py
 mv parameters.json ../game/parameters.json

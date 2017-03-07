@@ -1,7 +1,5 @@
-commands.rbm
-sensors.rbm
-commands_ml.json
-sensors_ml.json
+commands.csv
+sensors.csv
 parameters.json
 
 .direnv
