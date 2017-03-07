@@ -2,6 +2,29 @@
 
 You are a racing teacher. You're teaching an AI how to drive and win the championship.
 
+## Install
+
+This project assumes you have the following installed:
+
+* Ruby 2.4 (with bundler)
+* Python 3.6 (with virtualenv)
+
+To get the ruby game setup:
+
+```
+cd game
+bundle install
+cd ..
+```
+
+To get the python machine learning project setup:
+
+```
+cd machine-learning
+pip install -r requirements.txt
+cd ..
+```
+
 ## Usage
 
 ```
