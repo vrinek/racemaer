@@ -1,7 +1,8 @@
 require 'matrix'
 
+# AI to drive the car based on a pre-trained NN
 class AIDriveCar
-  # TODO: Threshold should be taken into account in the loss function
+  # TODO: Threshold should be taken into account in the loss function when training
   THRESHOLD = 0.4
 
   def initialize(actor_id:, sensors:, params:)
@@ -13,11 +14,10 @@ class AIDriveCar
 
   def commands
     cmds = []
-    cmds << accelerate if out[0] > THRESHOLD
-    cmds << turn_left  if out[1] > THRESHOLD
-    cmds << turn_right if out[2] > THRESHOLD
-    cmds << brake      if out[3] > THRESHOLD
-    # p cmds.map { |e| e[:action] }
+    cmds << accelerate if accelerate?
+    cmds << turn_left  if turn_left?
+    cmds << turn_right if turn_right?
+    cmds << brake      if brake?
     cmds
   end
 
@@ -27,10 +27,26 @@ class AIDriveCar
     1.0 / (1 + Math::E**-x)
   end
 
-  def out
-    input = Matrix[@sensors.draw]
+  def labels
+    features = Matrix[@sensors.draw]
 
-    (input * @weight + @bias).to_a.flatten.map { |i| sigmoid(i) }
+    (features * @weight + @bias).to_a.flatten.map { |i| sigmoid(i) }
+  end
+
+  def accelerate?
+    labels[0] > THRESHOLD
+  end
+
+  def turn_left?
+    labels[1] > THRESHOLD
+  end
+
+  def turn_right?
+    labels[2] > THRESHOLD
+  end
+
+  def brake?
+    labels[3] > THRESHOLD
   end
 
   def turn_left

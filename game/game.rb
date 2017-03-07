@@ -12,6 +12,7 @@ require_relative './src/ai_input.rb'
 
 require_relative './src/debug_presenter.rb'
 require_relative './src/sensor_presenter.rb'
+require_relative './src/sensor_recorder.rb'
 require_relative './src/debug_dialog.rb'
 require_relative './src/input_recorder.rb'
 require_relative './src/input_replayer.rb'
@@ -41,9 +42,7 @@ class GameWindow < Gosu::Window
       models: @gameplay.objects, window_width: WIDTH, window_height: HEIGHT
     )
 
-    @sensor_presenter = SensorPresenter.new(
-      models: @gameplay.objects, space: @gameplay.space, mode: @mode
-    )
+    @sensor_presenter = initialize_sensor_presenter(@gameplay, @mode)
 
     @input = initialize_input(@gameplay.actors, @mode, @sensor_presenter)
   end
@@ -97,6 +96,17 @@ class GameWindow < Gosu::Window
       AiInput.new(actors: actors, sensors: sensor_presenter)
     else
       human_input
+    end
+  end
+
+  def initialize_sensor_presenter(gameplay, mode)
+    presenter = SensorPresenter.new(models: gameplay.objects, space: gameplay.space)
+
+    case mode
+    when 'record'
+      SensorRecorder.new(delegate: presenter)
+    else
+      presenter
     end
   end
 end
