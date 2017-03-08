@@ -14,6 +14,9 @@ class CarSensors
   MAX_RADIUS = RADIUS_POWER_BASE**RADIUS_STEPS * RADIUS_MULTIPLIER
   SENSOR_LOSS = 0.8
 
+  MAX_LINEAR_VELOCITY = 450.0
+  MAX_LATERAL_VELOCITY = 100.0
+
   # Collision handler for "collision" of car sensor with track barrier
   class SensorHandler
     def initialize(contacts:)
@@ -70,7 +73,7 @@ class CarSensors
       end
     end
 
-    readings
+    normalize(readings)
   end
 
   private
@@ -129,5 +132,12 @@ class CarSensors
   def circle_side_edge(radius, side_number)
     angle = (DEGREES_PER_STEP * side_number).gosu_to_radians
     CP::Vec2.new(radius, 0).rotate(CP::Vec2.for_angle(angle))
+  end
+
+  def normalize(readings)
+    linear_velocity = readings.shift / MAX_LINEAR_VELOCITY
+    lateral_velocity = readings.shift / MAX_LATERAL_VELOCITY
+    sensors = readings.map { |s| s / MAX_RADIUS }
+    [linear_velocity, lateral_velocity, *sensors].map { |n| n.round(3) }
   end
 end
