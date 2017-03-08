@@ -5,9 +5,9 @@ require_relative '../debug_presenter/debug_distance_sensor.rb'
 
 # Sensors array for a Car
 class CarSensors
-  RADIUS_MULTIPLIER = 20
-  RADIUS_POWER_BASE = 1.2
-  RADIUS_STEPS = 20
+  RADIUS_MULTIPLIER = 15
+  RADIUS_POWER_BASE = 1.1
+  RADIUS_STEPS = 45
   CIRCLE_STEPS = 36
 
   DEGREES_PER_STEP = 360.0 / CIRCLE_STEPS
@@ -53,7 +53,7 @@ class CarSensors
   end
 
   def debug_draw
-    # @debug_sensor_shapes.each(&:draw)
+    @debug_sensor_shapes.each(&:draw)
     @debug_distance_sensor.draw
   end
 
