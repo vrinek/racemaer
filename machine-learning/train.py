@@ -23,16 +23,20 @@ y = tf.sigmoid(tf.matmul(x, W) + b)
 y_ = tf.placeholder(tf.float32, [None, output_size])
 
 loss = tf.reduce_mean(tf.squared_difference(y_, y))
+tf.summary.scalar('loss', loss)
 
 train_step = tf.train.GradientDescentOptimizer(0.5).minimize(loss)
+
+merged = tf.summary.merge_all()
+log_writer = tf.summary.FileWriter('log')
 
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
-for epoch in range(100):
-    print(epoch, sess.run(loss, feed_dict={x: features, y_: labels}))
-    for _ in range(100):
-        sess.run(train_step, feed_dict={x: features, y_: labels})
+for step in range(5000):
+    summary, _ = sess.run([merged, train_step],
+                          feed_dict={x: features, y_: labels})
+    log_writer.add_summary(summary, step)
 
 json_data = json.dumps({
     'W': sess.run(W).tolist(),

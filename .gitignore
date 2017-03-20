@@ -3,3 +3,4 @@ sensors.csv
 parameters.json
 
 .direnv
+machine-learning/log/
